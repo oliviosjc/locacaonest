@@ -6,16 +6,19 @@ import { MenuModule } from './menu/menu.module';
 import { ConfigModule } from '@nestjs/config';
 import { DbModule } from './database/configurations/db.module';
 import { DataServiceModule } from './database/configurations/data-service.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
     DataServiceModule,
-    UsersModule, 
-    CompaniesModule, 
-    GroupsModule, 
-    MenuModule],
+    UsersModule,
+    CompaniesModule,
+    GroupsModule,
+    MenuModule,
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
 })
