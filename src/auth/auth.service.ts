@@ -3,12 +3,15 @@ import { IDataService } from 'src/database/repositories/interfaces/data-service.
 import { ResponseViewModel } from 'src/utils/response.model';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
+import { UserDTO } from './dto/user.dto';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly dataService: IDataService,
     private readonly jwtService: JwtService,
+    private readonly clsService: ClsService,
   ) {}
 
   async signIn(
@@ -32,5 +35,14 @@ export class AuthService {
     }
     else
     return new ResponseViewModel(HttpStatus.FORBIDDEN, 'Email ou senha inválidos!');
+  }
+
+  async getCLSUser() : Promise<UserDTO>
+  {
+    const user = this.clsService.get('user');
+    const dto = new UserDTO();
+    dto.email = user.email;
+    dto.id = user.sud;
+    return dto;
   }
 }

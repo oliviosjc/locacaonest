@@ -1,10 +1,10 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { IDataService } from 'src/database/repositories/interfaces/data-service.interface';
 import { ResponseViewModel } from 'src/utils/response.model';
 import { Group } from '../entities/group.entity';
 import { HttpStatus } from '@nestjs/common';
 import { CreateGroupCommand } from '../commands/create-group.command';
-import { ClsService } from 'nestjs-cls';
+import { GetUserByCLSQuery } from 'src/users/queries/get-user-by-cls.query';
 
 @CommandHandler(CreateGroupCommand)
 export class CreateGroupCommandHandler
@@ -12,14 +12,14 @@ export class CreateGroupCommandHandler
 {
   constructor(
     private readonly dataService: IDataService,
-    private readonly clsService: ClsService,
+    private readonly queryBus: QueryBus
   ) {}
 
   async execute(
     command: CreateGroupCommand,
   ): Promise<ResponseViewModel<string>> 
   {
-    const user = this.clsService.get('user');
+    const user = await this.queryBus.execute(new GetUserByCLSQuery());
 
     const nGroup = new Group();
     nGroup.name = command.name.toUpperCase();
@@ -42,9 +42,10 @@ export class CreateGroupCommandHandler
       nGroup.parentGroup = parentGroup;
     }
 
+    nGroup.owner = user;
+    nGroup.createdBy = user.email;
     nGroup.createdAt = new Date();
     nGroup.updatedAt = new Date();
-    nGroup.createdBy = user.email;
     nGroup.actived = true;
 
     await this.dataService.groups.save(nGroup);
