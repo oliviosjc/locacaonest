@@ -14,10 +14,13 @@ export class GetUserByCLSQueryHandler implements IQueryHandler<GetUserByCLSQuery
     async execute(query: GetUserByCLSQuery): Promise<User> 
     {
         const userCLS = await this.authService.getCLSUser();
+        if(userCLS === null)
+            return null;
 
         const user = await this.dataService.users.findOne({
             where: { email: userCLS.email },
         });
+        
         
         return user;
     }

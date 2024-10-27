@@ -5,6 +5,7 @@ import { Group } from '../entities/group.entity';
 import { HttpStatus } from '@nestjs/common';
 import { CreateGroupCommand } from '../commands/create-group.command';
 import { GetUserByCLSQuery } from 'src/users/queries/get-user-by-cls.query';
+import { User } from 'src/users/entities/user.entity';
 
 @CommandHandler(CreateGroupCommand)
 export class CreateGroupCommandHandler
@@ -12,14 +13,19 @@ export class CreateGroupCommandHandler
 {
   constructor(
     private readonly dataService: IDataService,
-    private readonly queryBus: QueryBus
+    private readonly queryBus: QueryBus,
   ) {}
 
   async execute(
     command: CreateGroupCommand,
-  ): Promise<ResponseViewModel<string>> 
-  {
-    const user = await this.queryBus.execute(new GetUserByCLSQuery());
+  ): Promise<ResponseViewModel<string>> {
+    const user = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
+
+    if (user === null)
+      return new ResponseViewModel(
+        HttpStatus.BAD_REQUEST,
+        'Não foi possível buscar informações do usuário logado.',
+      );
 
     const nGroup = new Group();
     nGroup.name = command.name.toUpperCase();
@@ -28,10 +34,10 @@ export class CreateGroupCommandHandler
       command.parentGroupId !== null &&
       command.parentGroupId !== '' &&
       command.parentGroupId !== undefined
-    ) 
-    {
+    ) {
       const parentGroup = await this.dataService.groups.findOne({
-        where: { id: command.parentGroupId }});
+        where: { id: command.parentGroupId },
+      });
 
       if (parentGroup === null)
         return new ResponseViewModel(
