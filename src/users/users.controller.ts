@@ -18,11 +18,7 @@ export class UsersController extends BaseController
     @ApiOperation({summary: 'Criar um novo usuário na base de dados'})
     async createUser(@Body() body: CreateUserCommand, @Res() res: Response): Promise<Response> 
     {
-        const createUserCommand = new CreateUserCommand();
-        Object.assign(createUserCommand, body); 
-        
-        const response: ResponseViewModel<string> = await this.commandBus.execute(createUserCommand);
-        
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);
     }
 }
