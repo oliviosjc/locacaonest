@@ -11,6 +11,8 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import { Group } from '../../groups/entities/group.entity';
+
 @Entity('users')
 export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 128, nullable: false })
@@ -33,6 +35,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => CompanyUserGroup, companyUserGroup => companyUserGroup.user)
   companyUserGroups: CompanyUserGroup[];
+
+  @OneToMany(() => Group, (group) => group.owner)
+  groups: Group[];
 
   @BeforeInsert()
   @BeforeUpdate()

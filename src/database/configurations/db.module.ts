@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../users/entities/user.entity';
 import { IDataService } from '../repositories/interfaces/data-service.interface';
 import { GenericDataService } from '../repositories/implementations/data-service.implementation';
+import { Group } from '../../groups/entities/group.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { GenericDataService } from '../repositories/implementations/data-service
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Group]),
   ],
   providers: [
     {

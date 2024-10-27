@@ -7,10 +7,15 @@ import { ConfigModule } from '@nestjs/config';
 import { DbModule } from './database/configurations/db.module';
 import { DataServiceModule } from './database/configurations/data-service.module';
 import { AuthModule } from './auth/auth.module';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true }
+    }),  
     DbModule,
     DataServiceModule,
     UsersModule,

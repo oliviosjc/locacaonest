@@ -19,6 +19,14 @@ async function bootstrap() {
     .setTitle('Locação API')
     .setDescription('Documentação de endpoints da Locação API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token',
+    )
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
