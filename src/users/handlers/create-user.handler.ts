@@ -21,21 +21,21 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
 
     const existentUser = await this.checkIfUserExists(email);
     if (existentUser)
-      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O email informado já existe na base de dados!');
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O email informado já está cadastrado na base de dados!');
 
     const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
     if (!userLogged)
-      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
+      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
 
     const owner = userLogged.owner || userLogged;
 
     const group = await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
     if (!group || group.owner.id !== owner.id)
-      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para vincular usuários a este grupo.');
 
-    const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A empresa informada não existe na base de dados!');
+    const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A compania informada não existe na base de dados!');
     if (!company || company.owner.id !== owner.id)
-      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, ' Vocé não possui permissão para criar um usuário na base de dados!');
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, ' Vocé não possui permissão para vincular usuários a esta compania.');
 
     let hasPermission = false;
 
@@ -46,7 +46,7 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
       hasPermission = await this.userService.hasCreateUserPermission(userLogged.id, company.id, 'CreateUserCommandHandler', this.dataService);
 
     if (hasPermission === false)
-      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para criar usuários para este grupo/compania.');
 
     const nUser = await this.createUser({ fullName, email, password, owner, createdBy: userLogged.email });
     await this.createCompanyUserGroup(nUser.id, group.id, company.id);

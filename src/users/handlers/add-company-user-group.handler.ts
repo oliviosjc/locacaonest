@@ -20,17 +20,17 @@ export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCom
         const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
 
         if (!userLogged)
-            return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
+            return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
 
         const owner = userLogged.owner || userLogged;
 
         const group = await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
         if (!group || group.owner.id !== owner.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para vincular usuários a este grupo.');
 
-        const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A empresa informada não existe na base de dados!');
+        const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A compania informada não existe na base de dados!');
         if (!company || company.owner.id !== owner.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para vincular usuários a esta empresa.');
 
         let hasPermission = false;
 
@@ -41,12 +41,12 @@ export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCom
             hasPermission = await this.userService.hasCreateUserPermission(userLogged.id, company.id, 'AddCompanyUserGroupCommandHandler', this.dataService);
 
         if (hasPermission === false)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Não foi possível criar um usuário na base de dados!');
+            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para vincular usuários a este grupo/compania.');
 
-        const userGroupCompanyExists = await this.dataService.companyUserGroups.findOne({ where: { userId, groupId, companyId } });
+        const companyUserGroupExists = await this.dataService.companyUserGroups.findOne({ where: { userId, groupId, companyId } });
 
-        if (userGroupCompanyExists)
-            return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário informado ja pertence a compania/grupo informado!');
+        if (companyUserGroupExists)
+            return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário informado ja pertence ao grupo/compania informado!');
 
         const nCompanyUserGroup = await this.dataService.companyUserGroups.create({
             userId: userId,

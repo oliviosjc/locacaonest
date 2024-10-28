@@ -6,6 +6,7 @@ import { GetUserByCLSQueryHandler } from './handlers/get-user-by-cls.handler';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersService } from './users.service';
 import { AddCompanyUserGroupCommandHandler } from './handlers/add-company-user-group.handler';
+import { RemoveCompanyUserGroupCommandHandler } from './handlers/remove-company-user-group.handler';
 
 @Module({
   imports: [CqrsModule, AuthModule],
@@ -13,6 +14,7 @@ import { AddCompanyUserGroupCommandHandler } from './handlers/add-company-user-g
   providers: [CreateUserCommandHandler, 
     GetUserByCLSQueryHandler, 
     AddCompanyUserGroupCommandHandler, 
+    RemoveCompanyUserGroupCommandHandler,
     UsersService]
 })
 export class UsersModule { }

@@ -9,12 +9,11 @@ import { User } from 'src/users/entities/user.entity';
 
 @CommandHandler(CreateGroupCommand)
 export class CreateGroupCommandHandler
-  implements ICommandHandler<CreateGroupCommand>
-{
+  implements ICommandHandler<CreateGroupCommand> {
   constructor(
     private readonly dataService: IDataService,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   async execute(
     command: CreateGroupCommand,

@@ -33,4 +33,12 @@ export class UsersController extends BaseController
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);
     }
+
+    @Post('remove-company-user-group')
+    @ApiOperation({summary: 'Desvincular um usuário existene a um grupo/empresa'})
+    async removeCompanyUserGroup(@Body() body: AddCompanyUserGroupCommand, @Res() res: Response): Promise<Response> 
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
 }
