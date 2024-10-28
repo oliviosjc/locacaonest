@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { BaseController } from 'src/utils/base.controller';
@@ -7,6 +7,8 @@ import { Response } from 'express';
 import { CreateCompanyCommand } from './commands/create-company.command';
 import { ResponseViewModel } from 'src/utils/response.model';
 import { UpdateCompanyCommand } from './commands/update-company.command';
+import { GetMyCompaniesDTO } from './dtos/get-my-companies.dto';
+import { GetMyCompaniesQuery } from './queries/get-my-companies.query';
 
 @ApiTags('companies')
 @ApiBearerAuth('access-token')
@@ -32,6 +34,16 @@ export class CompaniesController extends BaseController
     async updateCompany(@Body() body: UpdateCompanyCommand, @Res() res: Response) : Promise<Response>
     {
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
+    @Get('mine')
+    @ApiOperation({summary: 'Listar as empresas que o usuário tem acesso'})
+    async getCompanies(@Res() res: Response): Promise<Response>
+    {
+        const response: ResponseViewModel<GetMyCompaniesDTO[]> 
+        = await this.commandBus.execute(new GetMyCompaniesQuery());
+
         return this.sendResponse(res, response);
     }
 }
