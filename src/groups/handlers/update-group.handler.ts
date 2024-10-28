@@ -8,48 +8,32 @@ import { User } from 'src/users/entities/user.entity';
 
 @CommandHandler(UpdateGroupCommand)
 export class UpdateGroupCommandHandler
-  implements ICommandHandler<UpdateGroupCommand>
-{
+  implements ICommandHandler<UpdateGroupCommand> {
   constructor(
     private readonly dataService: IDataService,
     private readonly queryBus: QueryBus,
-  ) {}
-  async execute(
-    command: UpdateGroupCommand,
-  ): Promise<ResponseViewModel<string>> {
-    const user = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
+  ) { }
+  async execute(command: UpdateGroupCommand) : Promise<ResponseViewModel<string>> {
+    const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
 
-    if (user === null)
-      return new ResponseViewModel(
-        HttpStatus.BAD_REQUEST,
-        'Não foi possível buscar informações do usuário logado.',
-      );
+    if (!userLogged)
+      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
 
-    const group = await this.dataService.groups.findOne({
-      where: { id: command.id },
-      relations: ['owner'],
-    });
+    const group 
+    = await this.dataService.groups.findOne({ where: { id: command.id }, relations: ['owner']});
 
     if (group === null)
-      return new ResponseViewModel(
-        HttpStatus.BAD_REQUEST,
-        'Grupo não encontrado com este Id!',
-      );
+      return new ResponseViewModel(HttpStatus.BAD_REQUEST, 'O grupo informado não existe na base de dados!');
 
-    if (group.owner.id !== user.id)
-      return new ResponseViewModel(
-        HttpStatus.FORBIDDEN,
-        'Você não possui permissão para editar este grupo!',
-      );
+    if (group.owner.id !== userLogged.id)
+      return new ResponseViewModel(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para atualizar este grupo!');
 
     group.name = command.name.toUpperCase();
-    group.updatedBy = user.email;
+    group.updatedBy = userLogged.email;
     group.updatedAt = new Date();
 
     await this.dataService.groups.save(group);
-    return new ResponseViewModel(
-      HttpStatus.OK,
-      'Grupo atualizado com sucesso!',
-    );
+
+    return new ResponseViewModel<string>(HttpStatus.OK, 'O grupo foi atualizado com sucesso!');
   }
 }
