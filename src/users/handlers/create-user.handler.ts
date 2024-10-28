@@ -1,68 +1,83 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserCommand } from '../commands/create-user.command';
 import { ResponseViewModel } from 'src/utils/response.model';
-import { IDataService } from 'src/database/repositories/interfaces/data-service.interface';
+import { IDataService } from '../../database/repositories/interfaces/data-service.interface';
 import { User } from '../entities/user.entity';
 import { GetUserByCLSQuery } from '../queries/get-user-by-cls.query';
+import { UsersService } from '../users.service';
 
+@Injectable()
 @CommandHandler(CreateUserCommand)
-export class CreateUserCommandHandler
-  implements ICommandHandler<CreateUserCommand>
-{
+export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand> {
   constructor(
     private readonly dataService: IDataService,
     private readonly queryBus: QueryBus,
+    private readonly userService: UsersService
   ) {}
 
-  async execute(
-    command: CreateUserCommand,
-  ): Promise<ResponseViewModel<string>> 
-  {
-    const existentUser = await this.dataService.users.findOne({
-      where: {
-        email: command.email,
-      },
-    });
+  async execute(command: CreateUserCommand): Promise<ResponseViewModel<string>> {
+    const { email, fullName, password, groupId, companyId } = command;
 
-    if (existentUser !== null)
-      return new ResponseViewModel(
-        HttpStatus.BAD_REQUEST,
-        'Usuário ja existe na base de dados com este e-mail!',
-      );
-    
+    const existentUser = await this.checkIfUserExists(email);
+    if (existentUser) {
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O email informado já existe na base de dados!');
+    }
+
     const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
-    
-    if(userLogged === null)
-      return new ResponseViewModel
-      (
-        HttpStatus.BAD_REQUEST,
-        'Não foi possível buscar informações do usuário logado!',
-      );
-    
-    var owner = null as User;
+    if (!userLogged) {
+      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
+    }
 
-    if(userLogged.owner !== null)
-      owner = userLogged.owner;
-    else
-      owner = userLogged;
+    const owner = userLogged.owner || userLogged;
 
-    const nUser = new User();
-    nUser.fullName = command.fullName.toUpperCase();
-    nUser.password = command.password;
-    nUser.email = command.email;
-    nUser.actived = true;
-    nUser.createdAt = new Date();
-    nUser.updatedAt = new Date();
-    nUser.createdBy = userLogged.email;
-    nUser.updatedBy = userLogged.email;
-    nUser.owner = owner;
+    const group = await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
+    if (!group || group.owner.id !== owner.id) {
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+    }
+
+    const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A empresa informada não existe na base de dados!');
+    if (!company || company.owner.id !== owner.id) {
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, ' Vocé não possui permissão para criar um usuário na base de dados!');
+    }
+
+    const hasPermission = await this.userService
+    .verifyUserCompanyGroupHandler(userLogged.id, group, company, this.dataService, 'CreateUserCommandHandler');
+
+    if (!hasPermission) {
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para criar um usuário na base de dados!');
+    }
+
+    await this.createUser({ fullName, email, password, owner, createdBy: userLogged.email });
+
+    return new ResponseViewModel<string>(HttpStatus.CREATED, 'Usuário criado com sucesso!');
+  }
+
+  private async checkIfUserExists(email: string): Promise<boolean> {
+    return !!(await this.dataService.users.findOne({ where: { email } }));
+  }
+
+  private async getEntityWithOwner(repository, id: string, errorMessage: string): Promise<any> {
+    const entity = await repository.findOne({ where: { id }, relations: ['owner'] });
+    if (!entity) {
+      throw new ResponseViewModel(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+    return entity;
+  }
+
+  private async createUser({ fullName, email, password, owner, createdBy }: { fullName: string, email: string, password: string, owner: User, createdBy: string }): Promise<void> {
+    const newUser = this.dataService.users.create({
+      fullName: fullName.toUpperCase(),
+      email,
+      password,
+      actived: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy,
+      updatedBy: createdBy,
+      owner,
+    });
     
-    await this.dataService.users.save(nUser);
-    return new ResponseViewModel(
-      HttpStatus.CREATED,
-      'Usuário cadastrado com sucesso na base de dados!',
-      command.email,
-    );
+    await this.dataService.users.save(newUser);
   }
 }

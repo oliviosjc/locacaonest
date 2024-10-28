@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString, Length, Matches, ValidateIf } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Length, Matches, ValidateIf } from "class-validator";
 import { IsEqual } from "src/utils/equal.validator";
 
 export class CreateUserCommand 
@@ -24,4 +24,14 @@ export class CreateUserCommand
     @ValidateIf(o => o.password)
     @IsEqual('password', { message: 'A confirmação da senha deve ser igual à senha' })
     passwordConfirm: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    companyId: string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    groupId: string;
 }

@@ -61,4 +61,4 @@ export class CreateGroupCommandHandler
       'Grupo cadastrado com sucesso na base de dados!',
     );
   }
-}
+} 

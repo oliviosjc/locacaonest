@@ -44,7 +44,8 @@ export class AuthService {
       );
   }
 
-  async getCLSUser(): Promise<UserDTO> {
+  async getCLSUser(): Promise<UserDTO> 
+  {
     const user = this.clsService.get('user');
     const dto = new UserDTO();
     dto.email = user.email;
