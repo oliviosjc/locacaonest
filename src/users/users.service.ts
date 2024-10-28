@@ -2,29 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { IDataService } from 'src/database/repositories/interfaces/data-service.interface';
 
 @Injectable()
-export class UsersService 
-{
-  async verifyUserCompanyGroupHandler(
-    userId: string,
-    companyId: string,
-    groupId: string,
-    dataService: IDataService,
-    handler: string
-  ): Promise<boolean> 
-  {
+export class UsersService {
+  async hasCreateUserPermission(userLoggedId: string, companyId: string, handler: string, dataService: any)
+    : Promise<boolean> {
     const result = await dataService.companyUserGroups
       .createQueryBuilder('companyUserGroup')
-      .innerJoinAndSelect('companyUserGroup.group', 'group')
+      .innerJoin('companyUserGroup.group', 'group')
       .innerJoin('group.groupMenuItemFeatures', 'groupMenuItemFeature')
       .innerJoin('groupMenuItemFeature.menuItemFeature', 'menuItemFeature')
-      .where('companyUserGroup.userId = :userId', { userId })
+      .where('companyUserGroup.userId = :userId', { userId: userLoggedId })
       .andWhere('companyUserGroup.companyId = :companyId', { companyId })
-      .andWhere('companyUserGroup.groupId = :groupId', { groupId })
-      .andWhere('menuItemFeature.handler = :handler', {
-        handler: handler,
-      })
+      .andWhere('menuItemFeature.handler = :handler', { handler })
       .getOne();
 
-    return !!result;
+    return result !== null;
   }
 }

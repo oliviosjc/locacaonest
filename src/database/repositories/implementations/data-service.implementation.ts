@@ -1,6 +1,6 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, In } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { IDataService } from '../interfaces/data-service.interface';
 import { IGenericRepository } from '../interfaces/repository.interface';
 import { User } from '../../../users/entities/user.entity';
@@ -8,6 +8,8 @@ import { GenericRepository } from './repository.implementation';
 import { Group } from '../../../groups/entities/group.entity';
 import { CompanyUserGroup } from '../../../companies/entities/company-user-group.entity';
 import { Company } from '../../../companies/entities/company.entity';
+import { MenuItemFeature } from '../../../menu/entities/menu-item-feature.entity';
+import { GroupMenuItemFeature } from 'src/groups/entities/group-menu-item-feature.entity';
 
 @Injectable()
 export class GenericDataService
@@ -17,6 +19,8 @@ export class GenericDataService
   groups: IGenericRepository<Group>;
   companyUserGroups: IGenericRepository<CompanyUserGroup>;
   companies: IGenericRepository<Company>;
+  menuItemFeatures: IGenericRepository<MenuItemFeature>;
+  groupMenuItemFeatures: IGenericRepository<GroupMenuItemFeature>;
 
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
@@ -24,6 +28,8 @@ export class GenericDataService
     @InjectRepository(Group) private readonly groupRepository: IGenericRepository<Group>,
     @InjectRepository(CompanyUserGroup) private readonly companyUserGroupRepository: IGenericRepository<CompanyUserGroup>, 
     @InjectRepository(Company) private readonly companyRepository: IGenericRepository<Company>,
+    @InjectRepository(MenuItemFeature) private readonly menuItemFeatureRepository: IGenericRepository<MenuItemFeature>,
+    @InjectRepository(GroupMenuItemFeature) private readonly groupMenuItemFeatureRepository: IGenericRepository<GroupMenuItemFeature>,
   ) {}
 
   onApplicationBootstrap() {
@@ -50,5 +56,17 @@ export class GenericDataService
       this.entityManager,
       this.companyRepository.queryRunner,
     );
+
+    this.menuItemFeatures = new GenericRepository<MenuItemFeature>(
+      MenuItemFeature,
+      this.entityManager,
+      this.menuItemFeatureRepository.queryRunner,
+    );
+
+    this.groupMenuItemFeatures = new GenericRepository<GroupMenuItemFeature>(
+      GroupMenuItemFeature,
+      this.entityManager,
+      this.groupMenuItemFeatureRepository.queryRunner,
+    )
   }
 }

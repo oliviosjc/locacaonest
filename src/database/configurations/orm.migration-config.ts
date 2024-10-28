@@ -36,7 +36,8 @@ const dataSourceOptions: DataSourceOptions = {
   ssl:
   {
     rejectUnauthorized: false
-  }
+  },
+  logging: true
 };
 
 export default new DataSource(dataSourceOptions);

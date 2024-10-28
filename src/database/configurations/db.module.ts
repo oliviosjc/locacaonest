@@ -7,6 +7,9 @@ import { GenericDataService } from '../repositories/implementations/data-service
 import { Group } from '../../groups/entities/group.entity';
 import { CompanyUserGroup } from '../../companies/entities/company-user-group.entity';
 import { Company } from '../../companies/entities/company.entity';
+import { GroupMenuItemFeature } from '../../groups/entities/group-menu-item-feature.entity';
+import { MenuItem } from '../../menu/entities/menu-item.entity';
+import { MenuItemFeature } from '../../menu/entities/menu-item-feature.entity';
 
 @Module({
   imports: [
@@ -25,11 +28,12 @@ import { Company } from '../../companies/entities/company.entity';
         ssl:
         {
           rejectUnauthorized: false
-        }
+        },
+        logging: true
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Group, CompanyUserGroup, Company]),
+    TypeOrmModule.forFeature([User, Group, GroupMenuItemFeature, MenuItem, MenuItemFeature ,CompanyUserGroup, Company]),
   ],
   providers: [
     {
