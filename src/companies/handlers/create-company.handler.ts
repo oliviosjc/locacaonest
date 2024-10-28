@@ -23,7 +23,6 @@ export class CreateCompanyCommandHandler
     if (!userLogged)
       return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
 
-
     if (userLogged.owner !== null)
       return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Usuário não possui permissão para criar empresas!');
 

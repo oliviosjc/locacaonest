@@ -15,49 +15,40 @@ export class CreateGroupCommandHandler
     private readonly queryBus: QueryBus,
   ) { }
 
-  async execute(
-    command: CreateGroupCommand,
-  ): Promise<ResponseViewModel<string>> {
-    const user = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
+  async execute(command: CreateGroupCommand): Promise<ResponseViewModel<string>> {
+    const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
 
-    if (user === null)
-      return new ResponseViewModel(
-        HttpStatus.BAD_REQUEST,
-        'Não foi possível buscar informações do usuário logado.',
-      );
+    if (!userLogged)
+      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
 
-    const nGroup = new Group();
-    nGroup.name = command.name.toUpperCase();
+    if(userLogged.owner !== null)
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'O Usuário não possui permissão para criar grupos!');
 
-    if (
-      command.parentGroupId !== null &&
-      command.parentGroupId !== '' &&
-      command.parentGroupId !== undefined
-    ) {
-      const parentGroup = await this.dataService.groups.findOne({
-        where: { id: command.parentGroupId },
+    let parentGroup : Group = null;
+
+    if(command.parentGroupId !== null)
+    {
+      parentGroup = await this.dataService.groups.findOne({
+        where: { id: command.parentGroupId }
       });
 
-      if (parentGroup === null)
-        return new ResponseViewModel(
-          HttpStatus.BAD_REQUEST,
-          'Grupo pai não encontrado!',
-        );
-
-      nGroup.parentGroup = parentGroup;
+      if(parentGroup === null)
+        return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'O grupo pai informado não existe na base de dados!');
     }
 
-    nGroup.owner = user;
-    nGroup.createdBy = user.email;
-    nGroup.createdAt = new Date();
-    nGroup.updatedAt = new Date();
-    nGroup.actived = true;
+    const group = await this.dataService.groups.create({
+      name: command.name,
+      owner: userLogged,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: userLogged.email,
+      updatedBy: userLogged.email,
+      parentGroup: parentGroup,
+      actived: true
+    });
 
-    await this.dataService.groups.save(nGroup);
+    await this.dataService.groups.save(group);
 
-    return new ResponseViewModel(
-      HttpStatus.CREATED,
-      'Grupo cadastrado com sucesso na base de dados!',
-    );
+    return new ResponseViewModel<string>(HttpStatus.CREATED, 'Grupo criado com sucesso!');
   }
 } 
