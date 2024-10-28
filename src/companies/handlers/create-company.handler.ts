@@ -8,12 +8,11 @@ import { HttpStatus } from '@nestjs/common';
 
 @CommandHandler(CreateCompanyCommand)
 export class CreateCompanyCommandHandler
-  implements ICommandHandler<CreateCompanyCommand>
-{
+  implements ICommandHandler<CreateCompanyCommand> {
   constructor(
     private readonly dataService: IDataService,
     private readonly queryBus: QueryBus
-  ) {}
+  ) { }
 
   async execute(
     command: CreateCompanyCommand,
@@ -22,11 +21,11 @@ export class CreateCompanyCommandHandler
 
     const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
     if (!userLogged)
-        return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
-    
+      return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'Usuário não autenticado!');
+
 
     if (userLogged.owner !== null)
-        return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Usuário não possui permissão para criar empresas!');
+      return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Usuário não possui permissão para criar empresas!');
 
     const nCompany = await this.dataService.companies.create({
       socialName,
@@ -36,7 +35,8 @@ export class CreateCompanyCommandHandler
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: userLogged.email,
-      updatedBy: userLogged.email });
+      updatedBy: userLogged.email
+    });
 
     await this.dataService.companies.save(nCompany);
 
