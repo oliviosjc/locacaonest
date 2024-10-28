@@ -7,7 +7,6 @@ import { User } from '../entities/user.entity';
 import { GetUserByCLSQuery } from '../queries/get-user-by-cls.query';
 import { UsersService } from '../users.service';
 
-@Injectable()
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand> {
   constructor(

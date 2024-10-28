@@ -7,7 +7,6 @@ import { User } from "../entities/user.entity";
 import { GetUserByCLSQuery } from "../queries/get-user-by-cls.query";
 import { AddCompanyUserGroupCommand } from "../commands/add-company-user-group.command";
 
-@Injectable()
 @CommandHandler(AddCompanyUserGroupCommand)
 export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCompanyUserGroupCommand> {
     constructor(private readonly dataService: IDataService,

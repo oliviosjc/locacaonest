@@ -10,6 +10,7 @@ import { CompanyUserGroup } from '../../../companies/entities/company-user-group
 import { Company } from '../../../companies/entities/company.entity';
 import { MenuItemFeature } from '../../../menu/entities/menu-item-feature.entity';
 import { GroupMenuItemFeature } from '../../../groups/entities/group-menu-item-feature.entity';
+import { MenuItem } from '../../../menu/entities/menu-item.entity';
 
 @Injectable()
 export class GenericDataService
@@ -19,6 +20,7 @@ export class GenericDataService
   groups: IGenericRepository<Group>;
   companyUserGroups: IGenericRepository<CompanyUserGroup>;
   companies: IGenericRepository<Company>;
+  menuItems: IGenericRepository<MenuItem>;
   menuItemFeatures: IGenericRepository<MenuItemFeature>;
   groupMenuItemFeatures: IGenericRepository<GroupMenuItemFeature>;
 
@@ -28,6 +30,7 @@ export class GenericDataService
     @InjectRepository(Group) private readonly groupRepository: IGenericRepository<Group>,
     @InjectRepository(CompanyUserGroup) private readonly companyUserGroupRepository: IGenericRepository<CompanyUserGroup>, 
     @InjectRepository(Company) private readonly companyRepository: IGenericRepository<Company>,
+    @InjectRepository(MenuItem) private readonly menuItemRepository: IGenericRepository<MenuItem>,
     @InjectRepository(MenuItemFeature) private readonly menuItemFeatureRepository: IGenericRepository<MenuItemFeature>,
     @InjectRepository(GroupMenuItemFeature) private readonly groupMenuItemFeatureRepository: IGenericRepository<GroupMenuItemFeature>,
   ) {}
@@ -67,6 +70,12 @@ export class GenericDataService
       GroupMenuItemFeature,
       this.entityManager,
       this.groupMenuItemFeatureRepository.queryRunner,
+    )
+
+    this.menuItems = new GenericRepository<MenuItem>(
+      MenuItem,
+      this.entityManager,
+      this.menuItemRepository.queryRunner,
     )
   }
 }

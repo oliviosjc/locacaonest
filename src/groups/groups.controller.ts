@@ -7,6 +7,8 @@ import { ResponseViewModel } from 'src/utils/response.model';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateGroupCommand } from './commands/update-group.command';
+import { AddGroupMenuItemFeatureCommand } from './commands/add-group-menu-item-feature.command';
+import { RemoveGroupMenuItemFeatureCommand } from './commands/remove-group-menu-item-feature.command';
 
 @ApiTags('groups')
 @ApiBearerAuth('access-token')
@@ -30,6 +32,22 @@ export class GroupsController extends BaseController
     @Patch()
     @ApiOperation({summary: 'Atualizar um grupo'})
     async updateGroup(@Body() body: UpdateGroupCommand, @Res() res: Response) : Promise<Response>
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
+    @Post('add-group-menu-item-feature')
+    @ApiOperation({summary: 'Adicionar uma feature de um item de menu a um grupo'})
+    async addGroupMenuItemFeature(@Body() body: AddGroupMenuItemFeatureCommand, @Res() res: Response) : Promise<Response>
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
+    @Post('remove-group-menu-item-feature')
+    @ApiOperation({summary: 'Remover uma feature de um item de menu de um grupo'})
+    async removeGroupMenuItemFeature(@Body() body: RemoveGroupMenuItemFeatureCommand, @Res() res: Response) : Promise<Response>
     {
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);
