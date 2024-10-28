@@ -6,6 +6,7 @@ import { BaseController } from 'src/utils/base.controller';
 import { ResponseViewModel } from 'src/utils/response.model';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AddCompanyUserGroupCommand } from './commands/add-company-user-group.command';
 
 @ApiTags('users')
 @ApiBearerAuth('access-token')
@@ -20,6 +21,14 @@ export class UsersController extends BaseController
     @Post()
     @ApiOperation({summary: 'Criar um novo usuário na base de dados'})
     async createUser(@Body() body: CreateUserCommand, @Res() res: Response): Promise<Response> 
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
+    @Post('add-company-user-group')
+    @ApiOperation({summary: 'Vincular um usuário existene a um grupo/empresa'})
+    async addCompanyUserGroup(@Body() body: AddCompanyUserGroupCommand, @Res() res: Response): Promise<Response> 
     {
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);

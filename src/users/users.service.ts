@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IDataService } from 'src/database/repositories/interfaces/data-service.interface';
 
 @Injectable()
 export class UsersService {
