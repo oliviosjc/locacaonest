@@ -1,12 +1,15 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserCommand } from './commands/create-user.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { BaseController } from 'src/utils/base.controller';
 import { ResponseViewModel } from 'src/utils/response.model';
 import { Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('users')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController extends BaseController
 {

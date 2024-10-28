@@ -20,29 +20,36 @@ export class AuthService {
   ): Promise<ResponseViewModel<string>> {
     const user = await this.dataService.users.findOne({
       where: { email: email },
+      relations: ['owner'],
     });
 
     if (user && (await compare(password, user.password))) {
       const { password, ...result } = user;
 
-      const payload = { email: result.email, sub: result.id };
+      const payload = {
+        email: result.email,
+        sub: result.id,
+        ownerId: result.owner ? result.owner.id : null,
+      };
 
       return new ResponseViewModel(
         HttpStatus.OK,
         'Login efetuado com sucesso!',
         this.jwtService.sign(payload),
       );
-    }
-    else
-    return new ResponseViewModel(HttpStatus.FORBIDDEN, 'Email ou senha inválidos!');
+    } else
+      return new ResponseViewModel(
+        HttpStatus.FORBIDDEN,
+        'Email ou senha inválidos!',
+      );
   }
 
-  async getCLSUser() : Promise<UserDTO>
-  {
+  async getCLSUser(): Promise<UserDTO> {
     const user = this.clsService.get('user');
     const dto = new UserDTO();
     dto.email = user.email;
     dto.id = user.sud;
+    dto.ownerId = user.ownerId;
     return dto;
   }
 }

@@ -19,8 +19,8 @@ export class GetUserByCLSQueryHandler implements IQueryHandler<GetUserByCLSQuery
 
         const user = await this.dataService.users.findOne({
             where: { email: userCLS.email },
+            relations: ['owner']
         });
-        
         
         return user;
     }
