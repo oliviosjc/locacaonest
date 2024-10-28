@@ -5,6 +5,8 @@ import { User } from '../../users/entities/user.entity';
 import { IDataService } from '../repositories/interfaces/data-service.interface';
 import { GenericDataService } from '../repositories/implementations/data-service.implementation';
 import { Group } from '../../groups/entities/group.entity';
+import { CompanyUserGroup } from '../../companies/entities/company-user-group.entity';
+import { Company } from '../../companies/entities/company.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { Group } from '../../groups/entities/group.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Group]),
+    TypeOrmModule.forFeature([User, Group, CompanyUserGroup, Company]),
   ],
   providers: [
     {
