@@ -1,13 +1,13 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
 import { ResponseViewModel } from "src/utils/response.model";
 import { JwtService } from "@nestjs/jwt";
-import { compare } from "bcrypt";
 import { UserDTO } from "./dto/user.dto";
 import { ClsService } from "nestjs-cls";
 import { UserStatus } from "src/users/enumerators/user-status.enumerator";
 import { CreateAccountDTO } from "./dto/create-account.dto";
 import { DocumentHelper } from "src/utils/document.helper";
+import { compare, hash } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +49,33 @@ export class AuthService {
     if (user.status === UserStatus.BLOCKED)
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário vinculado a este e-mail está bloqueado!');
 
+    const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
+    const resetLink = `http://seuapp.com/reset-password?token=${token}`;
+
+    //TODO: Implementar envio de e-mail
+
     return new ResponseViewModel<string>(HttpStatus.OK, 'O link para alteração de senha foi enviado em seu e-mail.');
+  }
+
+  async resetPassword(token: string, password: string): Promise<ResponseViewModel<string>> 
+  {
+    try
+    {
+      const payload = this.jwtService.verify(token);
+      const user = await this.dataService.users.findOne({ where: { id: payload.userId } });
+
+      const hashedPassword = await hash(password, 12);
+
+      user.password = hashedPassword;
+
+      await this.dataService.users.save(user);
+
+      return new ResponseViewModel<string>(HttpStatus.OK, 'Senha alterada com sucesso!');
+    }
+    catch(error)
+    {
+      throw new UnauthorizedException('Token inválido ou expirado.');
+    }
   }
 
   async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>>
@@ -97,6 +123,8 @@ export class AuthService {
 
         return new ResponseViewModel<string>(HttpStatus.CREATED, message);
   }
+
+
 
   async getCLSUser(): Promise<UserDTO> {
     const user = this.clsService.get("user");
