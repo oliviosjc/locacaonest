@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { ResponseViewModel } from "src/utils/response.model";
 import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
 import { UsersService } from "../users.service";
 import { User } from "../entities/user.entity";
 import { GetUserByCLSQuery } from "../queries/get-user-by-cls.query";

@@ -8,6 +8,7 @@ import { DbModule } from './database/configurations/db.module';
 import { DataServiceModule } from './database/configurations/data-service.module';
 import { AuthModule } from './auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
+import { OnboardingModule } from './onboarding/onboarding.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ClsModule } from 'nestjs-cls';
     GroupsModule,
     MenuModule,
     AuthModule,
+    OnboardingModule,
   ],
   controllers: [],
   providers: [],

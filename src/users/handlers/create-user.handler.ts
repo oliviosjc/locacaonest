@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { CreateUserCommand } from '../commands/create-user.command';
 import { ResponseViewModel } from 'src/utils/response.model';
 import { IDataService } from '../../database/repositories/interfaces/data-service.interface';

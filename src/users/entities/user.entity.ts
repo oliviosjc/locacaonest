@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 
 import { Group } from '../../groups/entities/group.entity';
+import { UserStatus } from '../enumerators/user-status.enumerator';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -23,6 +24,17 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.ACTIVE,
+    nullable: true
+  })
+  status: UserStatus;
+
+  @Column({type: 'varchar', length: 14, nullable: true})
+  document: string;
 
   @OneToMany(() => User, (user) => user.owner)
   subUsers: User[];
@@ -38,6 +50,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Group, (group) => group.owner)
   groups: Group[];
+
 
   @BeforeInsert()
   @BeforeUpdate()

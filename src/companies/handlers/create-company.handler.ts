@@ -7,16 +7,13 @@ import { GetUserByCLSQuery } from '../../users/queries/get-user-by-cls.query';
 import { HttpStatus } from '@nestjs/common';
 
 @CommandHandler(CreateCompanyCommand)
-export class CreateCompanyCommandHandler
-  implements ICommandHandler<CreateCompanyCommand> {
+export class CreateCompanyCommandHandler implements ICommandHandler<CreateCompanyCommand> {
   constructor(
     private readonly dataService: IDataService,
     private readonly queryBus: QueryBus
   ) { }
 
-  async execute(
-    command: CreateCompanyCommand,
-  ): Promise<ResponseViewModel<string>> {
+  async execute(command: CreateCompanyCommand) : Promise<ResponseViewModel<string>> {
     const { socialName, fantasyName, document } = command;
 
     const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;

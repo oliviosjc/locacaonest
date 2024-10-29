@@ -1,1 +1,1 @@
-npm run typeorm migration:generate ./src/database/migrations/GroupUserOwner -- -d ./src/database/configurations/orm.migration-config.ts
+npm run typeorm migration:generate ./src/database/migrations/UserDocument -- -d ./src/database/configurations/orm.migration-config.ts
