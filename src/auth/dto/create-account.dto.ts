@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, Length, Matches, ValidateIf } from "class-validator";
+import { IsEmail, IsString, Length, Matches, ValidateIf } from "class-validator";
 import { IsEqual } from "src/utils/equal.validator";
 
-export class CreateAccountCommand
+export class CreateAccountDTO
 {
     @ApiProperty()
     @IsString({ message: "O nome deve ser uma string" })
@@ -26,8 +26,7 @@ export class CreateAccountCommand
     passwordConfirm: string;
 
     @ApiProperty()
-    @IsString({message: "O documento deve ser uma string"})
-    @Length(14,14, {message: "O documento deve ter 14 caracteres"})
-    @IsNotEmpty()
+    @IsString()
+    @Length(11,14, {message: "O documento deve ter entre 11 e 14 caracteres"})
     document: string;
 }
