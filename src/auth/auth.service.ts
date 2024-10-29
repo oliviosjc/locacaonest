@@ -146,7 +146,7 @@ export class AuthService {
       });
 
     await this.dataService.users.save(nUser);
-
+    
     const token = this.jwtService.sign({ userId: nUser.id }, { expiresIn: '12h' });
     const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
 

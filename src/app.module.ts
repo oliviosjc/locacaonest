@@ -11,6 +11,8 @@ import { ClsModule } from 'nestjs-cls';
 import { EmailModule } from './email/email.module';
 import { BullModule } from '@nestjs/bull';
 import { EmailProcessor } from './email/email.processor';
+import { EquipmentsModule } from './equipments/equipments.module';
+import { BackofficeModule } from './backoffice/backoffice.module';
 
 @Module({
   imports: [
@@ -32,7 +34,9 @@ import { EmailProcessor } from './email/email.processor';
     GroupsModule,
     MenuModule,
     AuthModule,
-    EmailModule
+    EmailModule,
+    EquipmentsModule,
+    BackofficeModule
   ],
   controllers: [],
   providers: [],

@@ -11,6 +11,12 @@ import { Company } from '../../../companies/entities/company.entity';
 import { MenuItemFeature } from '../../../menu/entities/menu-item-feature.entity';
 import { GroupMenuItemFeature } from '../../../groups/entities/group-menu-item-feature.entity';
 import { MenuItem } from '../../../menu/entities/menu-item.entity';
+import { Brand } from '../../../backoffice/entities/brand.entity';
+import { Category } from '../../../backoffice/entities/category.entity';
+import { Customer } from '../../../backoffice/entities/customers/customer.entity';
+import { Model } from '../../../backoffice/entities/model.entity';
+import { CustomerAddress } from '../../../backoffice/entities/customers/customer-address.entity';
+import { CustomerContact } from '../../../backoffice/entities/customers/customer-contact.entity';
 
 @Injectable()
 export class GenericDataService
@@ -23,7 +29,13 @@ export class GenericDataService
   menuItems: IGenericRepository<MenuItem>;
   menuItemFeatures: IGenericRepository<MenuItemFeature>;
   groupMenuItemFeatures: IGenericRepository<GroupMenuItemFeature>;
-
+  brands: IGenericRepository<Brand>;
+  categories: IGenericRepository<Category>;
+  customers: IGenericRepository<Customer>;
+  models: IGenericRepository<Model>;
+  customerAddresses: IGenericRepository<CustomerAddress>;
+  customerContacts: IGenericRepository<CustomerContact>;
+  
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
     @InjectRepository(User) private readonly userRepository: IGenericRepository<User>,
@@ -33,7 +45,14 @@ export class GenericDataService
     @InjectRepository(MenuItem) private readonly menuItemRepository: IGenericRepository<MenuItem>,
     @InjectRepository(MenuItemFeature) private readonly menuItemFeatureRepository: IGenericRepository<MenuItemFeature>,
     @InjectRepository(GroupMenuItemFeature) private readonly groupMenuItemFeatureRepository: IGenericRepository<GroupMenuItemFeature>,
+    @InjectRepository(Brand) private readonly brandRepository: IGenericRepository<Brand>,
+    @InjectRepository(Category) private readonly categoryRepository: IGenericRepository<Category>,
+    @InjectRepository(Customer) private readonly customerRepository: IGenericRepository<Customer>,
+    @InjectRepository(CustomerAddress) private readonly customerAddressRepository: IGenericRepository<CustomerAddress>,
+    @InjectRepository(CustomerContact) private readonly customerContactRepository: IGenericRepository<CustomerContact>,
+    @InjectRepository(Model) private readonly modelRepository: IGenericRepository<Model>,
   ) {}
+
 
   onApplicationBootstrap() {
     this.users = new GenericRepository<User>(
@@ -70,12 +89,48 @@ export class GenericDataService
       GroupMenuItemFeature,
       this.entityManager,
       this.groupMenuItemFeatureRepository.queryRunner,
-    )
+    );
 
     this.menuItems = new GenericRepository<MenuItem>(
       MenuItem,
       this.entityManager,
       this.menuItemRepository.queryRunner,
-    )
+    );
+
+    this.brands = new GenericRepository<Brand>(
+      Brand,
+      this.entityManager,
+      this.brandRepository.queryRunner,
+    );
+
+    this.categories = new GenericRepository<Category>(
+      Category,
+      this.entityManager,
+      this.categoryRepository.queryRunner,
+    );
+
+    this.customers = new GenericRepository<Customer>(
+      Customer,
+      this.entityManager,
+      this.customerRepository.queryRunner,
+    );
+
+    this.customerAddresses = new GenericRepository<CustomerAddress>(
+      CustomerAddress,
+      this.entityManager,
+      this.customerAddressRepository.queryRunner,
+    );
+
+    this.customerContacts = new GenericRepository<CustomerContact>(
+      CustomerContact,
+      this.entityManager,
+      this.customerContactRepository.queryRunner,
+    );
+
+    this.models = new GenericRepository<Model>(
+      Model,    
+      this.entityManager,
+      this.modelRepository.queryRunner, 
+    );
   }
 }

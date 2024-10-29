@@ -10,6 +10,12 @@ import { Company } from '../../companies/entities/company.entity';
 import { GroupMenuItemFeature } from '../../groups/entities/group-menu-item-feature.entity';
 import { MenuItem } from '../../menu/entities/menu-item.entity';
 import { MenuItemFeature } from '../../menu/entities/menu-item-feature.entity';
+import { Brand } from '../../backoffice/entities/brand.entity';
+import { Category } from '../../backoffice/entities/category.entity';
+import { Customer } from '../../backoffice/entities/customers/customer.entity';
+import { Model } from '../../backoffice/entities/model.entity';
+import { CustomerAddress } from '../../backoffice/entities/customers/customer-address.entity';
+import { CustomerContact } from '../../backoffice/entities/customers/customer-contact.entity';
 
 @Module({
   imports: [
@@ -33,7 +39,19 @@ import { MenuItemFeature } from '../../menu/entities/menu-item-feature.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Group, GroupMenuItemFeature, MenuItem, MenuItemFeature ,CompanyUserGroup, Company]),
+    TypeOrmModule.forFeature([User,
+      Group,
+      GroupMenuItemFeature,
+      MenuItem,
+      MenuItemFeature,
+      CompanyUserGroup,
+      Company,
+      Brand,
+      Category,
+      Customer,
+      CustomerAddress,
+      CustomerContact,
+      Model]),
   ],
   providers: [
     {
@@ -43,4 +61,4 @@ import { MenuItemFeature } from '../../menu/entities/menu-item-feature.entity';
   ],
   exports: [IDataService]
 })
-export class DbModule {}
+export class DbModule { }
