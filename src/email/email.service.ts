@@ -1,21 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly mailerService: NestMailerService) { }
+    constructor(@InjectQueue('email') private emailQueue: Queue) {}
 
-    async sendMail(to: string, subject: string, text: string) {
-        try {
-            await this.mailerService.sendMail({
-                to,
-                subject,
-                text,
-            });
-            return { message: 'E-mail enviado com sucesso' };
-        } catch (error) {
-            console.error('Erro ao enviar e-mail:', error);
-            throw new Error('Falha ao enviar e-mail');
-        }
+    async addEmailToQueue(emailData: { to: string; subject: string; text: string }) 
+    {
+        await this.emailQueue.add('sendEmail', emailData);
     }
 }

@@ -9,6 +9,8 @@ import { DataServiceModule } from './database/configurations/data-service.module
 import { AuthModule } from './auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
 import { EmailModule } from './email/email.module';
+import { BullModule } from '@nestjs/bull';
+import { EmailProcessor } from './email/email.processor';
 
 @Module({
   imports: [
@@ -16,6 +18,12 @@ import { EmailModule } from './email/email.module';
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true }
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     DbModule,
     DataServiceModule,

@@ -25,6 +25,9 @@ export class AuthService {
     if (user.status === UserStatus.BLOCKED)
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário vinculado a este e-mail está bloqueado!');
 
+    if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION)
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário vinculado a este e-mail ainda não foi verificado!');
+
     if (user && (await compare(password, user.password))) {
       const { password, ...result } = user;
 
@@ -55,11 +58,13 @@ export class AuthService {
     if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION) {
       const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '12h' });
       const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
-      await this.emailService.sendMail(
-        user.email,
-        'Confirmar minha conta',
-        `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
-      );
+
+      await this.emailService.addEmailToQueue({
+        to: user.email,
+        subject: 'Confirmar minha conta',
+        text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
+      });
+
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST,
         'O e-mail informado a confirmação por e-mail. Não esqueça de verificar a caixa de spam!');
     }
@@ -67,11 +72,11 @@ export class AuthService {
     const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '1h' });
     const resetLink = `http://seuapp.com/reset-password?token=${token}`;
 
-    await this.emailService.sendMail(
-      user.email,
-      'Recuperação de senha',
-      `Clique no link abaixo para alterar sua senha: ${resetLink}`
-    );
+    await this.emailService.addEmailToQueue({
+      to: user.email,
+      subject: 'Recuperação de senha',
+      text: `Clique no link abaixo para alterar sua senha: ${resetLink}`,
+    });
 
     return new ResponseViewModel<string>(HttpStatus.OK, 'O link para alteração de senha foi enviado em seu e-mail.');
   }
@@ -110,11 +115,13 @@ export class AuthService {
       if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION) {
         const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '12h' });
         const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
-        await this.emailService.sendMail(
-          user.email,
-          'Confirmar minha conta',
-          `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
-        );
+        
+        await this.emailService.addEmailToQueue({
+          to: user.email,
+          subject: 'Confirmar minha conta',
+          text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
+        });
+
         return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST,
           'O e-mail informado já foi cadastrado e aguarda a confirmação por e-mail. Não esqueça de verificar a caixa de spam!');
       }
@@ -143,11 +150,11 @@ export class AuthService {
     const token = this.jwtService.sign({ userId: nUser.id }, { expiresIn: '12h' });
     const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
 
-    await this.emailService.sendMail(
-      nUser.email,
-      'Confirmar minha conta',
-      `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
-    );
+    await this.emailService.addEmailToQueue({
+      to: nUser.email,
+      subject: 'Confirmar minha conta',
+      text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
+    });
 
     let message = 'Parabéns sua conta foi criada com sucesso e você ganhou 14 dias de acesso gratuito!';
     message += ' Enviamos um e-mail de confirmação para seu e-mail. Não esqueça de verificar a caixa de spam.'
@@ -166,9 +173,6 @@ export class AuthService {
     await this.dataService.users.save(user);
     return new ResponseViewModel<string>(HttpStatus.OK, 'Conta confirmada com sucesso!');
   }
-
-
-
 
   async getCLSUser(): Promise<UserDTO> {
     const user = this.clsService.get("user");
