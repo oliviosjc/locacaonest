@@ -16,6 +16,8 @@ import { Brand } from '../../backoffice/entities/brands/brand.entity';
 import { Category } from '../../backoffice/entities/categories/category.entity';
 import { CustomerDocumentConfiguration } from '../../backoffice/entities/customers/customer-document-configuration.entity';
 import { CustomerDocument } from '../../backoffice/entities/customers/customer-document.entity';
+import { CategoryTechnicalInformation } from '../../backoffice/entities/categories/category-technical-information.entity';
+import { ModelCategoryTechnicalInformationAnswer } from '../../backoffice/entities/models/model-category-technical-information-answer.entity';
 
 config();
 
@@ -39,12 +41,14 @@ const dataSourceOptions: DataSourceOptions = {
     MenuItemFeature,
     Brand,
     Category,
+    CategoryTechnicalInformation,
     Customer,
     CustomerAddress,
     CustomerContact,
     CustomerDocumentConfiguration,
     CustomerDocument,
-    Model
+    Model,
+    ModelCategoryTechnicalInformationAnswer
   ],
   migrations: [__dirname + '/../migrations/*.ts'],
   migrationsTableName: 'migrations',

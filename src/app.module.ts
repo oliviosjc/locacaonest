@@ -13,6 +13,7 @@ import { BullModule } from '@nestjs/bull';
 import { EmailProcessor } from './email/email.processor';
 import { EquipmentsModule } from './equipments/equipments.module';
 import { BackofficeModule } from './backoffice/backoffice.module';
+import { ViewModule } from './view/view.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { BackofficeModule } from './backoffice/backoffice.module';
     AuthModule,
     EmailModule,
     EquipmentsModule,
-    BackofficeModule
+    BackofficeModule,
+    ViewModule
   ],
   controllers: [],
   providers: [],

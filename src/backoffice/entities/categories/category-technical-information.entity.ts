@@ -1,11 +1,15 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { ModelCategoryTechnicalInformationAnswer } from "../models/model-category-technical-information-answer.entity";
-import { FieldType } from "src/backoffice/enumerators/field-type.enumerator";
+import { FieldType } from "../../../backoffice/enumerators/field-type.enumerator";
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('categorys_technical_informations')
 export class CategoryTechnicalInformation
 {
+    @PrimaryGeneratedColumn('uuid')
+    id: string = uuidv4();
+
     @ManyToOne(() => Category, category => category.categoryTechnicalInformations)
     category: Category;
 

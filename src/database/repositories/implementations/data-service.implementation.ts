@@ -19,6 +19,8 @@ import { Brand } from '../../../backoffice/entities/brands/brand.entity';
 import { Category } from '../../../backoffice/entities/categories/category.entity';
 import { CustomerDocumentConfiguration } from '../../../backoffice/entities/customers/customer-document-configuration.entity';
 import { CustomerDocument } from '../../../backoffice/entities/customers/customer-document.entity';
+import { CategoryTechnicalInformation } from '../../../backoffice/entities/categories/category-technical-information.entity';
+import { ModelCategoryTechnicalInformationAnswer } from '../../../backoffice/entities/models/model-category-technical-information-answer.entity';
 
 @Injectable()
 export class GenericDataService
@@ -39,6 +41,9 @@ export class GenericDataService
   customerContacts: IGenericRepository<CustomerContact>;
   customerDocumentConfigurations: IGenericRepository<CustomerDocumentConfiguration>;
   customerDocuments: IGenericRepository<CustomerDocument>;
+  categoryTechnicalInformations: IGenericRepository<CategoryTechnicalInformation>;
+  modelCategoryTechnicalInformationAnswers: IGenericRepository<ModelCategoryTechnicalInformationAnswer>;
+
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
     @InjectRepository(User) private readonly userRepository: IGenericRepository<User>,
@@ -50,14 +55,17 @@ export class GenericDataService
     @InjectRepository(GroupMenuItemFeature) private readonly groupMenuItemFeatureRepository: IGenericRepository<GroupMenuItemFeature>,
     @InjectRepository(Brand) private readonly brandRepository: IGenericRepository<Brand>,
     @InjectRepository(Category) private readonly categoryRepository: IGenericRepository<Category>,
+    @InjectRepository(CategoryTechnicalInformation)
+      private readonly categoryTechnicalInformationRepository: IGenericRepository<CategoryTechnicalInformation>,
     @InjectRepository(Customer) private readonly customerRepository: IGenericRepository<Customer>,
     @InjectRepository(CustomerAddress) private readonly customerAddressRepository: IGenericRepository<CustomerAddress>,
     @InjectRepository(CustomerContact) private readonly customerContactRepository: IGenericRepository<CustomerContact>,
     @InjectRepository(CustomerDocumentConfiguration) private readonly customerDocumentConfigurationRepository: IGenericRepository<CustomerDocumentConfiguration>,
     @InjectRepository(CustomerDocument) private readonly customerDocumentRepository: IGenericRepository<CustomerDocument>,
     @InjectRepository(Model) private readonly modelRepository: IGenericRepository<Model>,
+    @InjectRepository(ModelCategoryTechnicalInformationAnswer) 
+      private readonly modelCategoryTechnicalInformationAnswerRepository: IGenericRepository<ModelCategoryTechnicalInformationAnswer>,
   ) {}
-
 
   onApplicationBootstrap() {
     this.users = new GenericRepository<User>(
@@ -148,6 +156,18 @@ export class GenericDataService
       Model,    
       this.entityManager,
       this.modelRepository.queryRunner, 
+    );
+
+    this.categoryTechnicalInformations = new GenericRepository<CategoryTechnicalInformation>(
+      CategoryTechnicalInformation,
+      this.entityManager,
+      this.categoryTechnicalInformationRepository.queryRunner,
+    );
+
+    this.modelCategoryTechnicalInformationAnswers = new GenericRepository<ModelCategoryTechnicalInformationAnswer>(
+      ModelCategoryTechnicalInformationAnswer,
+      this.entityManager,
+      this.modelCategoryTechnicalInformationAnswerRepository.queryRunner,
     );
   }
 }
