@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
-import { BaseController } from 'src/utils/base.controller';
+import { BaseController } from '../utils/base.controller';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import { CreateCompanyCommand } from './commands/create-company.command';
-import { ResponseViewModel } from 'src/utils/response.model';
+import { ResponseViewModel } from '../utils/response.model';
 import { UpdateCompanyCommand } from './commands/update-company.command';
 import { GetMyCompaniesDTO } from './dtos/get-my-companies.dto';
 import { GetMyCompaniesQuery } from './queries/get-my-companies.query';

@@ -1,11 +1,11 @@
 import { Body, Controller, Patch, Post, Res, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { BaseController } from 'src/utils/base.controller';
+import { BaseController } from '../utils/base.controller';
 import { CreateGroupCommand } from './commands/create-group.command';
-import { ResponseViewModel } from 'src/utils/response.model';
+import { ResponseViewModel } from '../utils/response.model';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UpdateGroupCommand } from './commands/update-group.command';
 import { AddGroupMenuItemFeatureCommand } from './commands/add-group-menu-item-feature.command';
 import { RemoveGroupMenuItemFeatureCommand } from './commands/remove-group-menu-item-feature.command';

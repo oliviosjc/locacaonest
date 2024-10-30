@@ -1,8 +1,8 @@
-import { BaseEntity } from "../../utils/base.entity";
+import { BaseEntity } from "../../../utils/base.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { Brand } from "./brand.entity";
-import { Category } from "./category.entity";
-import { User } from "../../users/entities/user.entity";
+import { Brand } from "../brands/brand.entity";
+import { Category } from "../categories/category.entity";
+import { User } from "../../../users/entities/user.entity";
 
 @Entity('models')
 export class Model extends BaseEntity

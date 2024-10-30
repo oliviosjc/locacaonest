@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryBus, QueryHandler } from "@nestjs/cqrs";
 import { GetMyCompaniesQuery } from "../queries/get-my-companies.query";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
+import { IDataService } from "../../database/repositories/interfaces/data-service.interface";
 import { GetMyCompaniesDTO } from "../dtos/get-my-companies.dto";
-import { ResponseViewModel } from "src/utils/response.model";
-import { GetUserByCLSQuery } from "src/users/queries/get-user-by-cls.query";
-import { User } from "src/users/entities/user.entity";
+import { ResponseViewModel } from "../../utils/response.model";
+import { GetUserByCLSQuery } from "../../users/queries/get-user-by-cls.query";
+import { User } from "../../users/entities/user.entity";
 import { HttpStatus } from "@nestjs/common";
 import { Company } from "../entities/company.entity";
 

@@ -1,11 +1,12 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { HttpStatus } from '@nestjs/common';
 import { CreateUserCommand } from '../commands/create-user.command';
-import { ResponseViewModel } from 'src/utils/response.model';
+import { ResponseViewModel } from '../../utils/response.model';
 import { IDataService } from '../../database/repositories/interfaces/data-service.interface';
 import { User } from '../entities/user.entity';
 import { GetUserByCLSQuery } from '../queries/get-user-by-cls.query';
 import { UsersService } from '../users.service';
+import { DocumentHelper } from '../../utils/document.helper';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand> {
@@ -16,7 +17,16 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
   ) { }
 
   async execute(command: CreateUserCommand): Promise<ResponseViewModel<string>> {
-    const { email, fullName, password, groupId, companyId } = command;
+    const { email, fullName, password, groupId, companyId, document } = command;
+
+    let documentISValid = true;
+    if (document.length == 11)
+      documentISValid = DocumentHelper.validateCPF(document);
+    else if (document.length !== 14)
+      documentISValid = false;
+
+    if (!documentISValid)
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento inserido é inválido!');
 
     const existentUser = await this.checkIfUserExists(email);
     if (existentUser)

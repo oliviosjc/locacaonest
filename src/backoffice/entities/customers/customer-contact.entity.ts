@@ -8,9 +8,6 @@ export class CustomerContact
     @PrimaryGeneratedColumn('uuid')
     id: string = uuidv4();
 
-    @ManyToOne(() => Customer, customer => customer.contacts)
-    customer: Customer;
-
     @Column({ type: 'varchar', length: 128, nullable: false })
     name: string;
 
@@ -25,4 +22,7 @@ export class CustomerContact
 
     @Column({ type: 'boolean', nullable: false, default: false })
     systemCommunication: boolean;
+
+    @ManyToOne(() => Customer, customer => customer.contacts)
+    customer: Customer;
 }

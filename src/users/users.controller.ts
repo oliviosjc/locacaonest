@@ -2,10 +2,10 @@ import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserCommand } from './commands/create-user.command';
 import { CommandBus } from '@nestjs/cqrs';
-import { BaseController } from 'src/utils/base.controller';
-import { ResponseViewModel } from 'src/utils/response.model';
+import { BaseController } from '../utils/base.controller';
+import { ResponseViewModel } from '../utils/response.model';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { AddCompanyUserGroupCommand } from './commands/add-company-user-group.command';
 
 @ApiTags('users')

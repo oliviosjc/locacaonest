@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsString, Length, Matches, ValidateIf } from "class-validator";
-import { IsEqual } from "src/utils/equal.validator";
+import { IsEqual } from "../../utils/equal.validator";
 
 export class CreateAccountDTO
 {

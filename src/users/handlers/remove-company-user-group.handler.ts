@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { RemoveCompanyUserGroupCommand } from "../commands/remove-company-user-group.command";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
+import { IDataService } from "../../database/repositories/interfaces/data-service.interface";
 import { UsersService } from "../users.service";
-import { ResponseViewModel } from "src/utils/response.model";
+import { ResponseViewModel } from "../../utils/response.model";
 import { GetUserByCLSQuery } from "../queries/get-user-by-cls.query";
 import { User } from "../entities/user.entity";
 import { HttpStatus } from "@nestjs/common";

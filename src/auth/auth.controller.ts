@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignInDTO } from "./dto/sign-in.dto";
-import { BaseController } from "src/utils/base.controller";
-import { ResponseViewModel } from "src/utils/response.model";
+import { BaseController } from "../utils/base.controller";
+import { ResponseViewModel } from "../utils/response.model";
 import { Response } from "express";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateAccountDTO } from "./dto/create-account.dto";

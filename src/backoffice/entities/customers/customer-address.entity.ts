@@ -7,6 +7,9 @@ export class CustomerAddress
 {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuidv4();
+
+    @Column({ type: 'varchar', length: 128, nullable: false, unique:true })
+    alias: string;
     
     @Column({ type: 'varchar', length: 128, nullable: false })
     address: string;

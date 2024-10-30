@@ -1,10 +1,10 @@
 import { HttpStatus } from "@nestjs/common";
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
-import { CreateBrandCommand } from "src/backoffice/commands/brands/create-brand.command";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
-import { User } from "src/users/entities/user.entity";
-import { GetUserByCLSQuery } from "src/users/queries/get-user-by-cls.query";
-import { ResponseViewModel } from "src/utils/response.model";
+import { CreateBrandCommand } from "../../../backoffice/commands/brands/create-brand.command";
+import { IDataService } from "../../../database/repositories/interfaces/data-service.interface";
+import { User } from "../../../users/entities/user.entity";
+import { GetUserByCLSQuery } from "../../../users/queries/get-user-by-cls.query";
+import { ResponseViewModel } from "../../../utils/response.model";
 
 @CommandHandler(CreateBrandCommand)
 export class CreateBrandCommandHandler implements ICommandHandler<CreateBrandCommand>

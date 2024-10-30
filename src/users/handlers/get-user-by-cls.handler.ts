@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetUserByCLSQuery } from "../queries/get-user-by-cls.query";
-import { AuthService } from "src/auth/auth.service";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
+import { AuthService } from "../../auth/auth.service";
+import { IDataService } from "../../database/repositories/interfaces/data-service.interface";
 import { User } from "../entities/user.entity";
 
 @QueryHandler(GetUserByCLSQuery)

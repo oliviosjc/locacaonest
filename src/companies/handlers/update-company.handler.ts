@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { UpdateCompanyCommand } from "../commands/update-company.command";
-import { ResponseViewModel } from "src/utils/response.model";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
-import { User } from "src/users/entities/user.entity";
-import { GetUserByCLSQuery } from "src/users/queries/get-user-by-cls.query";
+import { ResponseViewModel } from "../../utils/response.model";
+import { IDataService } from "../../database/repositories/interfaces/data-service.interface";
+import { User } from "../../users/entities/user.entity";
+import { GetUserByCLSQuery } from "../../users/queries/get-user-by-cls.query";
 import { HttpStatus } from "@nestjs/common";
 
 @CommandHandler(UpdateCompanyCommand)

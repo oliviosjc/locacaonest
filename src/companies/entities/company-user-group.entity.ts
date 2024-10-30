@@ -1,4 +1,3 @@
-// src/locacao.Domain/Entities/Backoffice/Companies/company-user-group.model.ts
 import { User } from "../../users/entities/user.entity";
 import { Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Company } from "./company.entity";

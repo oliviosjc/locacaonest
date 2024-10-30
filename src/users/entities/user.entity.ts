@@ -13,9 +13,10 @@ import {
 
 import { Group } from '../../groups/entities/group.entity';
 import { UserStatus } from '../enumerators/user-status.enumerator';
-import { Brand } from '../../backoffice/entities/brand.entity';
-import { Category } from '../../backoffice/entities/category.entity';
-import { Model } from '../../backoffice/entities/model.entity';
+import { Brand } from '../../backoffice/entities/brands/brand.entity';
+import { Category } from '../../backoffice/entities/categories/category.entity';
+import { Model } from '../../backoffice/entities/models/model.entity';
+import { Customer } from '../../backoffice/entities/customers/customer.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -62,6 +63,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Model, (model) => model.owner)
   models: Model[];
+
+  @OneToMany(() => Customer, (customer) => customer.owner)
+  customers: Customer[];
 
   @BeforeInsert()
   @BeforeUpdate()

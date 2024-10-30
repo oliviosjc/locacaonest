@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
-import { ResponseViewModel } from "src/utils/response.model";
+import { IDataService } from "../database/repositories/interfaces/data-service.interface";
+import { ResponseViewModel } from "../utils/response.model";
 import { JwtService } from "@nestjs/jwt";
 import { UserDTO } from "./dto/user.dto";
 import { ClsService } from "nestjs-cls";
-import { UserStatus } from "src/users/enumerators/user-status.enumerator";
+import { UserStatus } from "../users/enumerators/user-status.enumerator";
 import { CreateAccountDTO } from "./dto/create-account.dto";
-import { DocumentHelper } from "src/utils/document.helper";
+import { DocumentHelper } from "../utils/document.helper";
 import { compare, hash } from 'bcrypt';
-import { EmailService } from "src/email/email.service";
+import { EmailService } from "../email/email.service";
 
 @Injectable()
 export class AuthService {

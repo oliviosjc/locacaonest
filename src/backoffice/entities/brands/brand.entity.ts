@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { BaseEntity } from "../../utils/base.entity";
-import { Model } from "./model.entity";
-import { User } from "../../users/entities/user.entity";
+import { BaseEntity } from "../../../utils/base.entity";
+import { User } from "../../../users/entities/user.entity";
+import { Model } from "../models/model.entity";
 
 @Entity('brands')
 export class Brand extends BaseEntity

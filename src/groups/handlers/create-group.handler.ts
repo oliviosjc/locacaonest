@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
-import { IDataService } from 'src/database/repositories/interfaces/data-service.interface';
-import { ResponseViewModel } from 'src/utils/response.model';
+import { IDataService } from '../../database/repositories/interfaces/data-service.interface';
+import { ResponseViewModel } from '../../utils/response.model';
 import { Group } from '../entities/group.entity';
 import { HttpStatus } from '@nestjs/common';
 import { CreateGroupCommand } from '../commands/create-group.command';
-import { GetUserByCLSQuery } from 'src/users/queries/get-user-by-cls.query';
-import { User } from 'src/users/entities/user.entity';
+import { GetUserByCLSQuery } from '../../users/queries/get-user-by-cls.query';
+import { User } from '../../users/entities/user.entity';
 
 @CommandHandler(CreateGroupCommand)
 export class CreateGroupCommandHandler

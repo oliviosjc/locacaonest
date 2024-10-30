@@ -1,10 +1,10 @@
 import { HttpStatus } from "@nestjs/common";
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
-import { CreateCategoryCommand } from "src/backoffice/commands/categories/create-category.command";
-import { IDataService } from "src/database/repositories/interfaces/data-service.interface";
-import { User } from "src/users/entities/user.entity";
-import { GetUserByCLSQuery } from "src/users/queries/get-user-by-cls.query";
-import { ResponseViewModel } from "src/utils/response.model";
+import { CreateCategoryCommand } from "../../../backoffice/commands/categories/create-category.command";
+import { IDataService } from "../../../database/repositories/interfaces/data-service.interface";
+import { User } from "../../../users/entities/user.entity";
+import { GetUserByCLSQuery } from "../../../users/queries/get-user-by-cls.query";
+import { ResponseViewModel } from "../../../utils/response.model";
 
 @CommandHandler(CreateCategoryCommand)
 export class CreateCategoryCommandHandler implements ICommandHandler<CreateCategoryCommand>

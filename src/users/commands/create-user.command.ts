@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString, Length, Matches, ValidateIf } from "class-validator";
-import { IsEqual } from "src/utils/equal.validator";
+import { IsEqual } from "../../utils/equal.validator";
 
 export class CreateUserCommand 
 {
@@ -34,4 +34,10 @@ export class CreateUserCommand
     @IsNotEmpty()
     @IsString()
     groupId: string;
+
+    @ApiProperty()
+    @IsString()
+    @Length(14)
+    @IsNotEmpty()
+    document: string;
 }
