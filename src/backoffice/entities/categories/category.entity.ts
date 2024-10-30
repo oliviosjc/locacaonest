@@ -2,6 +2,7 @@ import { BaseEntity } from "../../../utils/base.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Model } from "../models/model.entity";
 import { User } from "../../../users/entities/user.entity";
+import { CategoryTechnicalInformation } from "./category-technical-information.entity";
 
 @Entity('categories')
 export class Category extends BaseEntity
@@ -17,4 +18,7 @@ export class Category extends BaseEntity
 
     @ManyToOne(() => User, user => user.categories)
     owner: User;
+
+    @OneToMany(() => CategoryTechnicalInformation, cti => cti.category)
+    categoryTechnicalInformations: CategoryTechnicalInformation[];
 }

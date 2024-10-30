@@ -18,6 +18,8 @@ import { Category } from '../../backoffice/entities/categories/category.entity';
 import { Model } from '../../backoffice/entities/models/model.entity';
 import { Customer } from '../../backoffice/entities/customers/customer.entity';
 import { CustomerDocumentConfiguration } from '../../backoffice/entities/customers/customer-document-configuration.entity';
+import { UserSubscriptionPlan } from '../enumerators/user-subscription-plan.enumerator';
+import { UserSubscriptionPeriod } from '../enumerators/user-subscription-period.enumerator';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -38,8 +40,30 @@ export class User extends BaseEntity {
   })
   status: UserStatus;
 
+  @Column({
+    type: 'enum',
+    enum: UserSubscriptionPlan,
+    default: null,
+    nullable: true
+  })
+  subscriptionPlan: UserSubscriptionPlan;
+
+  @Column({
+    type: 'enum',
+    enum: UserSubscriptionPeriod,
+    default: null,
+    nullable: true
+  })
+  subscriptionPeriod: UserSubscriptionPeriod;
+
   @Column({ type: 'varchar', length: 14, nullable: true })
   document: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionStartDate: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionEndDate: Date;
 
   @OneToMany(() => User, (user) => user.owner)
   subUsers: User[];
