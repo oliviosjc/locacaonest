@@ -14,6 +14,8 @@ import { CustomerAddress } from '../../backoffice/entities/customers/customer-ad
 import { CustomerContact } from '../../backoffice/entities/customers/customer-contact.entity';
 import { Brand } from '../../backoffice/entities/brands/brand.entity';
 import { Category } from '../../backoffice/entities/categories/category.entity';
+import { CustomerDocumentConfiguration } from '../../backoffice/entities/customers/customer-document-configuration.entity';
+import { CustomerDocument } from '../../backoffice/entities/customers/customer-document.entity';
 
 config();
 
@@ -26,6 +28,7 @@ const dataSourceOptions: DataSourceOptions = {
   username: configService.get<string>('DB_USERNAME'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_NAME'),
+  schema: configService.get<string>('DB_SCHEMA'),
   entities: [
     User,
     Company,
@@ -39,11 +42,13 @@ const dataSourceOptions: DataSourceOptions = {
     Customer,
     CustomerAddress,
     CustomerContact,
+    CustomerDocumentConfiguration,
+    CustomerDocument,
     Model
   ],
   migrations: [__dirname + '/../migrations/*.ts'],
   migrationsTableName: 'migrations',
-  migrationsRun: true,
+  migrationsRun: false,
   synchronize: false,
   ssl:
   {

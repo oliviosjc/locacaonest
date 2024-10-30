@@ -17,6 +17,7 @@ import { Brand } from '../../backoffice/entities/brands/brand.entity';
 import { Category } from '../../backoffice/entities/categories/category.entity';
 import { Model } from '../../backoffice/entities/models/model.entity';
 import { Customer } from '../../backoffice/entities/customers/customer.entity';
+import { CustomerDocumentConfiguration } from '../../backoffice/entities/customers/customer-document-configuration.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -66,6 +67,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Customer, (customer) => customer.owner)
   customers: Customer[];
+
+  @OneToMany(() => CustomerDocumentConfiguration, (customerDocumentConfiguration) => customerDocumentConfiguration.owner)
+  customerDocumentConfigurations: CustomerDocumentConfiguration[]
 
   @BeforeInsert()
   @BeforeUpdate()

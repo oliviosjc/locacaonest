@@ -8,6 +8,7 @@ import { AuthModule } from '../auth/auth.module';
 import { CreateCustomerCommandHandler } from './handlers/customers/create-customer.handler';
 import { CreateCustomerAddressCommandHandler } from './handlers/customers/addresses/create-customer-address.handler';
 import { CreateCustomerContactCommand } from './commands/customers/contacts/create-customer-contact.command';
+import { CreateCustomerDocumentConfigurationCommandHandler } from './handlers/documents/create-customer-document-configuration.handler';
 
 @Module({
   imports: [CqrsModule, AuthModule],
@@ -18,7 +19,8 @@ import { CreateCustomerContactCommand } from './commands/customers/contacts/crea
     CreateModelCommandHandler,
     CreateCustomerCommandHandler,
     CreateCustomerAddressCommandHandler,
-    CreateCustomerContactCommand
+    CreateCustomerContactCommand,
+    CreateCustomerDocumentConfigurationCommandHandler
   ]
 })
 export class BackofficeModule {}

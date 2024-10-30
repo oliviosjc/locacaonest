@@ -3,8 +3,8 @@ import { CreateCustomerContactCommand }
     from "../../../../backoffice/commands/customers/contacts/create-customer-contact.command";
 import { ResponseViewModel } from "../../../../utils/response.model";
 import { IDataService } from "../../../../database/repositories/interfaces/data-service.interface";
-import { User } from "src/users/entities/user.entity";
-import { GetUserByCLSQuery } from "src/users/queries/get-user-by-cls.query";
+import { User } from "../../../../users/entities/user.entity";
+import { GetUserByCLSQuery } from "../../../../users/queries/get-user-by-cls.query";
 import { HttpStatus } from "@nestjs/common";
 
 @CommandHandler(CreateCustomerContactCommand)

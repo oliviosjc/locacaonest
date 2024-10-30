@@ -65,4 +65,12 @@ export class BackofficeController extends BaseController
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);
     }
+
+    @Post('customer/document/configuration')
+    @ApiOperation({ summary: 'Criar uma nova configuração de documento' }) 
+    async createCustomerDocumentConfiguration(@Body() body: CreateCustomerAddressCommand, @Res() res: Response): Promise<Response>
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
 }

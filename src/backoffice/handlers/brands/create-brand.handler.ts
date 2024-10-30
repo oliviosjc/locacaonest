@@ -7,7 +7,8 @@ import { GetUserByCLSQuery } from "../../../users/queries/get-user-by-cls.query"
 import { ResponseViewModel } from "../../../utils/response.model";
 
 @CommandHandler(CreateBrandCommand)
-export class CreateBrandCommandHandler implements ICommandHandler<CreateBrandCommand>
+export class CreateBrandCommandHandler 
+    implements ICommandHandler<CreateBrandCommand, ResponseViewModel<string>>
 {
     constructor(private readonly dataService: IDataService,
         private readonly queryBus: QueryBus

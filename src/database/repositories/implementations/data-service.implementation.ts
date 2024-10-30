@@ -17,6 +17,8 @@ import { CustomerAddress } from '../../../backoffice/entities/customers/customer
 import { CustomerContact } from '../../../backoffice/entities/customers/customer-contact.entity';
 import { Brand } from '../../../backoffice/entities/brands/brand.entity';
 import { Category } from '../../../backoffice/entities/categories/category.entity';
+import { CustomerDocumentConfiguration } from '../../../backoffice/entities/customers/customer-document-configuration.entity';
+import { CustomerDocument } from '../../../backoffice/entities/customers/customer-document.entity';
 
 @Injectable()
 export class GenericDataService
@@ -35,7 +37,8 @@ export class GenericDataService
   models: IGenericRepository<Model>;
   customerAddresses: IGenericRepository<CustomerAddress>;
   customerContacts: IGenericRepository<CustomerContact>;
-  
+  customerDocumentConfigurations: IGenericRepository<CustomerDocumentConfiguration>;
+  customerDocuments: IGenericRepository<CustomerDocument>;
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
     @InjectRepository(User) private readonly userRepository: IGenericRepository<User>,
@@ -50,6 +53,8 @@ export class GenericDataService
     @InjectRepository(Customer) private readonly customerRepository: IGenericRepository<Customer>,
     @InjectRepository(CustomerAddress) private readonly customerAddressRepository: IGenericRepository<CustomerAddress>,
     @InjectRepository(CustomerContact) private readonly customerContactRepository: IGenericRepository<CustomerContact>,
+    @InjectRepository(CustomerDocumentConfiguration) private readonly customerDocumentConfigurationRepository: IGenericRepository<CustomerDocumentConfiguration>,
+    @InjectRepository(CustomerDocument) private readonly customerDocumentRepository: IGenericRepository<CustomerDocument>,
     @InjectRepository(Model) private readonly modelRepository: IGenericRepository<Model>,
   ) {}
 
@@ -125,6 +130,18 @@ export class GenericDataService
       CustomerContact,
       this.entityManager,
       this.customerContactRepository.queryRunner,
+    );
+
+    this.customerDocumentConfigurations = new GenericRepository<CustomerDocumentConfiguration>(
+      CustomerDocumentConfiguration,
+      this.entityManager,
+      this.customerDocumentConfigurationRepository.queryRunner,
+    );
+
+    this.customerDocuments = new GenericRepository<CustomerDocument>(
+      CustomerDocument,
+      this.entityManager,
+      this.customerDocumentRepository.queryRunner,
     );
 
     this.models = new GenericRepository<Model>(

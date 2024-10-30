@@ -12,6 +12,8 @@ import { CustomerAddress } from "../../../backoffice/entities/customers/customer
 import { CustomerContact } from "../../../backoffice/entities/customers/customer-contact.entity";
 import { Brand } from "../../../backoffice/entities/brands/brand.entity";
 import { Category } from "../../../backoffice/entities/categories/category.entity";
+import { CustomerDocumentConfiguration } from "../../../backoffice/entities/customers/customer-document-configuration.entity";
+import { CustomerDocument } from "../../../backoffice/entities/customers/customer-document.entity";
 
 export abstract class IDataService {
   users: IGenericRepository<User>;
@@ -27,4 +29,6 @@ export abstract class IDataService {
   customers: IGenericRepository<Customer>;
   customerAddresses: IGenericRepository<CustomerAddress>;
   customerContacts: IGenericRepository<CustomerContact>;
+  customerDocumentConfigurations: IGenericRepository<CustomerDocumentConfiguration>;
+  customerDocuments: IGenericRepository<CustomerDocument>;
 }

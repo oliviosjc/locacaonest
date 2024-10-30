@@ -3,6 +3,7 @@ import { BaseEntity } from "../../../utils/base.entity";
 import { CustomerContact } from "./customer-contact.entity";
 import { CustomerAddress } from "./customer-address.entity";
 import { User } from "../../../users/entities/user.entity";
+import { CustomerDocument } from "./customer-document.entity";
 
 @Entity('customers')
 export class Customer extends BaseEntity
@@ -18,6 +19,9 @@ export class Customer extends BaseEntity
 
     @OneToMany(() => CustomerAddress, customerAddress => customerAddress.customer)
     addresses: CustomerAddress[];
+
+    @OneToMany(() => CustomerDocument, customerDocument => customerDocument.customer)   
+    documents: CustomerDocument[];
 
     @ManyToOne(() => User, user => user.customers)
     owner: User;
