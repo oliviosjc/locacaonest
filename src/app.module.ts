@@ -10,10 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
 import { EmailModule } from './email/email.module';
 import { BullModule } from '@nestjs/bull';
-import { EmailProcessor } from './email/email.processor';
 import { EquipmentsModule } from './equipments/equipments.module';
 import { BackofficeModule } from './backoffice/backoffice.module';
-import { ViewModule } from './view/view.module';
 
 @Module({
   imports: [
@@ -37,8 +35,7 @@ import { ViewModule } from './view/view.module';
     AuthModule,
     EmailModule,
     EquipmentsModule,
-    BackofficeModule,
-    ViewModule
+    BackofficeModule
   ],
   controllers: [],
   providers: [],
