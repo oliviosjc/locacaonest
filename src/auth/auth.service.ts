@@ -12,6 +12,7 @@ import { EmailService } from "../email/email.service";
 import { Company } from "src/companies/entities/company.entity";
 import { Group } from "src/groups/entities/group.entity";
 import { CompanyUserGroup } from "src/companies/entities/company-user-group.entity";
+import { User } from "src/users/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -102,39 +103,30 @@ export class AuthService {
     }
   }
 
-  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> 
-{
-    let documentISValid = true;
-    if (dto.document.length == 11)
-      documentISValid = DocumentHelper.validateCPF(dto.document);
-    else if (dto.document.length !== 14)
-      documentISValid = false;
+  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> {
+    const isDocumentValid = (document: string) =>
+      (document.length === 11 && DocumentHelper.validateCPF(document)) ||
+      (document.length === 14);
 
-    if (!documentISValid)
+    if (!isDocumentValid(dto.document))
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento pessoal inserido é inválido!');
 
-    let companyDocumentISValid = true;
-    if (dto.companyDocument.length == 11)
-      companyDocumentISValid = DocumentHelper.validateCPF(dto.companyDocument);
-    else if (dto.companyDocument.length !== 14)
-      companyDocumentISValid = false;
-
-    if (!companyDocumentISValid)
+    if (!isDocumentValid(dto.companyDocument))
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento da empresa inserido é inválido!');
 
     const user = await this.dataService.users.findOne({ where: { email: dto.email } });
 
-    if (user !== null) 
-    {
+    if (user !== null) {
       if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION) {
         const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '12h' });
         const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
-        
-        await this.emailService.addEmailToQueue({
-          to: user.email,
-          subject: 'Confirmar minha conta',
-          text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
-        });
+
+        await this.emailService.addEmailToQueue
+          ({
+            to: user.email,
+            subject: 'Confirmar minha conta',
+            text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
+          });
 
         return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST,
           'O e-mail informado já foi cadastrado e aguarda a confirmação por e-mail. Não esqueça de verificar a caixa de spam!');
@@ -145,19 +137,17 @@ export class AuthService {
         return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O e-mail informado já foi cadastrado. Caso tenha dificuldades em acessar sua conta, acesse a Central de Ajuda!');
     }
 
-    const nUser = await this.dataService.users.create
-      ({
-        fullName: dto.fullName.toUpperCase(),
-        email: dto.email,
-        password: dto.password,
-        document: dto.document,
-        status: UserStatus.WAITING_EMAIL_VERIFICATION,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        createdBy: 'customer-onboarding',
-        updatedBy: 'customer-onboarding',
-        actived: true
-    });
+    const nUser = new User();
+    nUser.email = dto.email;
+    nUser.fullName = dto.fullName.toUpperCase();
+    nUser.document = dto.document.toUpperCase();
+    nUser.password = dto.password;
+    nUser.status = UserStatus.WAITING_EMAIL_VERIFICATION;
+    nUser.createdAt = new Date();
+    nUser.updatedAt = new Date();
+    nUser.createdBy = 'customer-onboarding';
+    nUser.updatedBy = 'customer-onboarding';
+    nUser.actived = true;
 
     await this.dataService.users.save(nUser);
 
@@ -165,6 +155,7 @@ export class AuthService {
     nCompany.document = dto.companyDocument;
     nCompany.socialName = dto.companySocialName;
     nCompany.fantasyName = dto.companyFantasyName;
+    nCompany.owner = nUser;
     nCompany.createdAt = new Date();
     nCompany.updatedAt = new Date();
     nCompany.createdBy = 'customer-onboarding';
@@ -173,6 +164,8 @@ export class AuthService {
 
     const nGroup = new Group();
     nGroup.name = dto.groupName;
+    nGroup.root = true;
+    nGroup.owner = nUser;
     nGroup.createdAt = new Date();
     nGroup.updatedAt = new Date();
     nGroup.createdBy = 'customer-onboarding';
@@ -186,13 +179,15 @@ export class AuthService {
     nCompanyUserGroup.company = nCompany;
     nCompanyUserGroup.user = nUser;
     nCompanyUserGroup.group = nGroup;
-    
+
     await this.dataService.companyUserGroups.save(nCompanyUserGroup);
-    
+
     const token = this.jwtService.sign({ userId: nUser.id }, { expiresIn: '12h' });
     const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
 
-    await this.emailService.addEmailToQueue({
+    await this.emailService
+    .addEmailToQueue
+    ({
       to: nUser.email,
       subject: 'Confirmar minha conta',
       text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
@@ -204,13 +199,16 @@ export class AuthService {
     return new ResponseViewModel<string>(HttpStatus.CREATED, message);
   }
 
-  async confirmAccount(token: string): Promise<ResponseViewModel<string>> {
+  async confirmAccount(token: string): Promise<ResponseViewModel<string>> 
+  {
     const payload = this.jwtService.verify(token);
     const user = await this.dataService.users.findOne({ where: { id: payload.userId } });
 
     user.status = UserStatus.FREE_TRIAL_PERIOD;
     user.updatedAt = new Date();
     user.updatedBy = 'customer-onboarding';
+    user.subscriptionStartDate = new Date();
+    user.subscriptionEndDate.setDate(user.subscriptionStartDate.getDate() + 14);
 
     await this.dataService.users.save(user);
     return new ResponseViewModel<string>(HttpStatus.OK, 'Conta confirmada com sucesso!');

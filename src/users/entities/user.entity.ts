@@ -21,7 +21,8 @@ import { UserSubscriptionPlan } from '../enumerators/user-subscription-plan.enum
 import { UserSubscriptionPeriod } from '../enumerators/user-subscription-period.enumerator';
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User extends BaseEntity 
+{
   @Column({ type: 'varchar', length: 128, nullable: false })
   fullName: string;
 
