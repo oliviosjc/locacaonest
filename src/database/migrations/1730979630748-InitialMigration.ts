@@ -1,16 +1,15 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class SyncMigration1730325732741 implements MigrationInterface {
-    name = 'SyncMigration1730325732741'
+export class InitialMigration1730979630748 implements MigrationInterface {
+    name = 'InitialMigration1730979630748'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "companies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "socialName" character varying(128) NOT NULL, "fantasyName" character varying(128) NOT NULL, "document" character varying(14) NOT NULL, "ownerId" uuid, CONSTRAINT "UQ_13496c970093729e7ab04eb7da4" UNIQUE ("document"), CONSTRAINT "PK_d4bc3e82a314fa9e29f652c2c22" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "menu_item_features" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(64) NOT NULL, "handler" character varying(64) NOT NULL, "menuItemId" uuid, CONSTRAINT "UQ_d7cf84591c4037888441a049746" UNIQUE ("name"), CONSTRAINT "UQ_eae890e9962cb413313f0428b3d" UNIQUE ("handler"), CONSTRAINT "PK_8a24678d5a7745168771ad11a2b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "menus" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(64) NOT NULL, "icon" character varying(64) NOT NULL, "link" character varying(64), "order" integer NOT NULL DEFAULT '0', "parentId" uuid, CONSTRAINT "PK_3fec3d93327f4538e0cbd4349c4" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "group_menu_item_features" ("groupId" uuid NOT NULL, "menuItemId" uuid NOT NULL, "menuItemFeatureId" uuid NOT NULL, CONSTRAINT "PK_0c7d876288db22a082fcd98144c" PRIMARY KEY ("groupId", "menuItemId", "menuItemFeatureId"))`);
-        await queryRunner.query(`CREATE TABLE "groups" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "name" character varying(128) NOT NULL, "parentGroupId" uuid, "ownerId" uuid, CONSTRAINT "PK_659d1483316afb28afd3a90646e" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "groups" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "name" character varying(128) NOT NULL, "root" boolean NOT NULL, "parentGroupId" uuid, "ownerId" uuid, CONSTRAINT "PK_659d1483316afb28afd3a90646e" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "model_category_technical_information_answers" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "value" character varying(32) NOT NULL, "categoryTechnicalInformationId" uuid, "modelId" uuid, CONSTRAINT "PK_c6e1fe1179cef120583f710d5fe" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "public"."categorys_technical_informations_fieldtype_enum" AS ENUM('text', 'number', 'date', 'boolean')`);
         await queryRunner.query(`CREATE TABLE "categorys_technical_informations" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "fieldType" "public"."categorys_technical_informations_fieldtype_enum" NOT NULL DEFAULT 'text', "key" character varying(128) NOT NULL, "required" boolean NOT NULL DEFAULT false, "order" integer NOT NULL DEFAULT '0', "categoryId" uuid, CONSTRAINT "PK_77115b2f4842378d0a1b05ba582" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "categories" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "name" character varying(128) NOT NULL, "description" character varying(128) NOT NULL, "ownerId" uuid, CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "models" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "name" character varying(128) NOT NULL, "description" character varying(128) NOT NULL, "image" character varying(128), "brandId" uuid, "categoryId" uuid, "ownerId" uuid, CONSTRAINT "PK_ef9ed7160ea69013636466bf2d5" PRIMARY KEY ("id"))`);
@@ -20,8 +19,6 @@ export class SyncMigration1730325732741 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "customer_document_configurations" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(128) NOT NULL, "order" integer NOT NULL, "required" boolean NOT NULL, "ownerId" uuid, CONSTRAINT "PK_573678b89b14cac93354e66694f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "customer_documents" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "filename" character varying(128) NOT NULL, "extension" character varying(128) NOT NULL, "s3Path" character varying(1024) NOT NULL, "customerId" uuid, "customerDocumentConfigurationId" uuid, CONSTRAINT "PK_ccc82daa515b50e68a76f343417" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "customers" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "name" character varying(128) NOT NULL, "document" character varying(14) NOT NULL, "ownerId" uuid, CONSTRAINT "UQ_68c9c024a07c49ad6a2072d23c6" UNIQUE ("document"), CONSTRAINT "PK_133ec679a801fab5e070f73d3ea" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "public"."users_subscriptionplan_enum" AS ENUM('BRONZE', 'SILVER', 'GOLD')`);
-        await queryRunner.query(`CREATE TYPE "public"."users_subscriptionperiod_enum" AS ENUM('MONTHLY', 'QUARTERLY', 'SEMIANNUAL', 'ANNUAL')`);
         await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "createdBy" character varying(128) NOT NULL, "updatedBy" character varying(128), "actived" boolean NOT NULL DEFAULT true, "fullName" character varying(128) NOT NULL, "email" character varying(128) NOT NULL, "password" character varying NOT NULL, "status" "public"."users_status_enum" DEFAULT 'ACTIVE', "subscriptionPlan" "public"."users_subscriptionplan_enum", "subscriptionPeriod" "public"."users_subscriptionperiod_enum", "document" character varying(14), "subscriptionStartDate" TIMESTAMP, "subscriptionEndDate" TIMESTAMP, "ownerId" uuid, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "companies_user_groups" ("companyId" uuid NOT NULL, "userId" uuid NOT NULL, "groupId" uuid NOT NULL, CONSTRAINT "PK_374a45f2cebd7c49ac60ad1c5e7" PRIMARY KEY ("companyId", "userId", "groupId"))`);
         await queryRunner.query(`ALTER TABLE "companies" ADD CONSTRAINT "FK_6dcdcbb7d72f64602307ec4ab39" FOREIGN KEY ("ownerId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -81,8 +78,6 @@ export class SyncMigration1730325732741 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "companies" DROP CONSTRAINT "FK_6dcdcbb7d72f64602307ec4ab39"`);
         await queryRunner.query(`DROP TABLE "companies_user_groups"`);
         await queryRunner.query(`DROP TABLE "users"`);
-        await queryRunner.query(`DROP TYPE "public"."users_subscriptionperiod_enum"`);
-        await queryRunner.query(`DROP TYPE "public"."users_subscriptionplan_enum"`);
         await queryRunner.query(`DROP TABLE "customers"`);
         await queryRunner.query(`DROP TABLE "customer_documents"`);
         await queryRunner.query(`DROP TABLE "customer_document_configurations"`);
@@ -92,7 +87,6 @@ export class SyncMigration1730325732741 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "models"`);
         await queryRunner.query(`DROP TABLE "categories"`);
         await queryRunner.query(`DROP TABLE "categorys_technical_informations"`);
-        await queryRunner.query(`DROP TYPE "public"."categorys_technical_informations_fieldtype_enum"`);
         await queryRunner.query(`DROP TABLE "model_category_technical_information_answers"`);
         await queryRunner.query(`DROP TABLE "groups"`);
         await queryRunner.query(`DROP TABLE "group_menu_item_features"`);

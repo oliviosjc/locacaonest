@@ -37,7 +37,7 @@ export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCom
             && userLogged.id === company.owner.id)
             hasPermission = true;
         else
-            hasPermission = await this.userService.hasCreateUserPermission(userLogged.id, company.id, 'AddCompanyUserGroupCommandHandler', this.dataService);
+            hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, 'AddCompanyUserGroupCommandHandler', this.dataService);
 
         if (hasPermission === false)
             return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para vincular usuários a este grupo/compania.');

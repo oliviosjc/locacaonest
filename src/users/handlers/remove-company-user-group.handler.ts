@@ -38,7 +38,7 @@ export class RemoveCompanyUserGroupCommandHandler implements ICommandHandler<Rem
             && userLogged.id === company.owner.id)
             hasPermission = true;
         else
-            hasPermission = await this.userService.hasCreateUserPermission(userLogged.id, company.id, 'RemoveCompanyUserGroupCommandHandler', this.dataService);
+            hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, 'RemoveCompanyUserGroupCommandHandler', this.dataService);
 
         if(hasPermission === false)
             return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para remover usuários deste grupo/compania.');

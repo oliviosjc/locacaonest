@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString, Length } from "class-validator";
+import { BaseCommand } from "src/utils/base.command";
 
-export class CreateCategoryCommand
+export class CreateCategoryCommand extends BaseCommand
 {
     @IsString()
     @IsNotEmpty()

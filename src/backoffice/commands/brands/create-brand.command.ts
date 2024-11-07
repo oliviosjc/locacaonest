@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
+import { BaseCommand } from "src/utils/base.command";
 
-export class CreateBrandCommand
+export class CreateBrandCommand extends BaseCommand
 {
     @ApiProperty()
     @IsString()

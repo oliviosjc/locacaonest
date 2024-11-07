@@ -54,6 +54,7 @@ export class User extends BaseEntity {
     default: null,
     nullable: true
   })
+  
   subscriptionPeriod: UserSubscriptionPeriod;
 
   @Column({ type: 'varchar', length: 14, nullable: true })

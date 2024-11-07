@@ -10,6 +10,9 @@ export class Group extends BaseEntity
     @Column({type: 'varchar', length: 128, nullable: false})
     name: string;
 
+    @Column()
+    root: boolean;
+
     @OneToMany(() => Group, group => group.parentGroup)
     subGroups: Group[];
 
@@ -23,5 +26,5 @@ export class Group extends BaseEntity
     groupMenuItemFeatures: GroupMenuItemFeature[];
 
     @ManyToOne(() => User, user => user.groups)
-    owner: User
+    owner?: User
 }

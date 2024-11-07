@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
-  async hasCreateUserPermission(userLoggedId: string, companyId: string, handler: string, dataService: any)
+  async hasUserPermission(userLoggedId: string, companyId: string, groupId: string, handler: string, dataService: any)
     : Promise<boolean> {
     const result = await dataService.companyUserGroups
       .createQueryBuilder('companyUserGroup')
@@ -11,6 +11,7 @@ export class UsersService {
       .innerJoin('groupMenuItemFeature.menuItemFeature', 'menuItemFeature')
       .where('companyUserGroup.userId = :userId', { userId: userLoggedId })
       .andWhere('companyUserGroup.companyId = :companyId', { companyId })
+      .andWhere('companyUserGroup.groupId = :groupId', { groupId })
       .andWhere('menuItemFeature.handler = :handler', { handler })
       .getOne();
 

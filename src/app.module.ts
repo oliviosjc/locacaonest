@@ -12,6 +12,8 @@ import { EmailModule } from './email/email.module';
 import { BullModule } from '@nestjs/bull';
 import { EquipmentsModule } from './equipments/equipments.module';
 import { BackofficeModule } from './backoffice/backoffice.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PermissionInterceptor } from './interceptors/permission.interceptor';
 
 @Module({
   imports: [
@@ -38,6 +40,11 @@ import { BackofficeModule } from './backoffice/backoffice.module';
     BackofficeModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PermissionInterceptor
+    }
+  ],
 })
 export class AppModule { }
