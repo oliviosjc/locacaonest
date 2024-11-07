@@ -18,9 +18,6 @@ export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCom
         const { userId, groupId, companyId } = command;
         const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
 
-        if (!userLogged)
-            return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
-
         const owner = userLogged.owner || userLogged;
 
         const group = await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
@@ -37,7 +34,7 @@ export class AddCompanyUserGroupCommandHandler implements ICommandHandler<AddCom
             && userLogged.id === company.owner.id)
             hasPermission = true;
         else
-            hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, 'AddCompanyUserGroupCommandHandler', this.dataService);
+            hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, groupId, 'AddCompanyUserGroupCommandHandler', this.dataService);
 
         if (hasPermission === false)
             return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para vincular usuários a este grupo/compania.');

@@ -9,9 +9,11 @@ import { CreateCustomerCommandHandler } from './handlers/customers/create-custom
 import { CreateCustomerAddressCommandHandler } from './handlers/customers/addresses/create-customer-address.handler';
 import { CreateCustomerContactCommand } from './commands/customers/contacts/create-customer-contact.command';
 import { CreateCustomerDocumentConfigurationCommandHandler } from './handlers/documents/create-customer-document-configuration.handler';
+import { UsersService } from 'src/users/users.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [CqrsModule, AuthModule],
+  imports: [CqrsModule, AuthModule, UsersModule],
   controllers: [BackofficeController],
   providers: [
     CreateBrandCommandHandler,

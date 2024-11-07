@@ -27,6 +27,26 @@ export class CreateAccountDTO
 
     @ApiProperty()
     @IsString()
-    @Length(11,14, {message: "O documento deve ter entre 11 e 14 caracteres"})
+    @Length(11,14, { message: "O documento deve ter entre 11 e 14 caracteres" })
     document: string;
+
+    @ApiProperty()
+    @IsString()
+    @Length(1, 255, { message: "O nome da empresa deve ter entre 1 e 255 caracteres" })
+    companySocialName: string;
+
+    @ApiProperty()
+    @IsString()
+    @Length(1, 255, { message: "O nome fantasia da empresa deve ter entre 1 e 255 caracteres" })
+    companyFantasyName: string;
+
+    @ApiProperty()
+    @IsString()
+    @Length(11, 14, { message: "O documento da empresa deve ter entre 1 e 14 caracteres" })
+    companyDocument: string;
+
+    @ApiProperty()
+    @IsString()
+    @Length(1, 255, { message: "O nome do grupo deve ter entre 1 e 255 caracteres" })
+    groupName: string;
 }

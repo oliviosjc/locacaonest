@@ -4,7 +4,6 @@ import { Company } from '../../companies/entities/company.entity';
 import { BaseEntity } from '../../utils/base.entity';
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   ManyToOne,
@@ -97,12 +96,13 @@ export class User extends BaseEntity {
   customerDocumentConfigurations: CustomerDocumentConfiguration[]
 
   @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
+  async hashPassword() 
+  {
     if (this.password) {
-      this.password = await hash(this.password, 12);
+      this.password = await hash(this.password, 10);
     }
   }
+
 
   async validatePassword(password: string): Promise<boolean> {
     return await compare(password, this.password);

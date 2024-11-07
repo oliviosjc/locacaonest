@@ -15,6 +15,7 @@ import { RemoveCompanyUserGroupCommandHandler } from './handlers/remove-company-
     GetUserByCLSQueryHandler, 
     AddCompanyUserGroupCommandHandler, 
     RemoveCompanyUserGroupCommandHandler,
-    UsersService]
+    UsersService],
+    exports: [UsersService]
 })
 export class UsersModule { }

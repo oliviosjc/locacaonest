@@ -9,6 +9,9 @@ import { CreateAccountDTO } from "./dto/create-account.dto";
 import { DocumentHelper } from "../utils/document.helper";
 import { compare, hash } from 'bcrypt';
 import { EmailService } from "../email/email.service";
+import { Company } from "src/companies/entities/company.entity";
+import { Group } from "src/groups/entities/group.entity";
+import { CompanyUserGroup } from "src/companies/entities/company-user-group.entity";
 
 @Injectable()
 export class AuthService {
@@ -99,7 +102,8 @@ export class AuthService {
     }
   }
 
-  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> {
+  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> 
+{
     let documentISValid = true;
     if (dto.document.length == 11)
       documentISValid = DocumentHelper.validateCPF(dto.document);
@@ -107,11 +111,21 @@ export class AuthService {
       documentISValid = false;
 
     if (!documentISValid)
-      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento inserido é inválido!');
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento pessoal inserido é inválido!');
+
+    let companyDocumentISValid = true;
+    if (dto.companyDocument.length == 11)
+      companyDocumentISValid = DocumentHelper.validateCPF(dto.companyDocument);
+    else if (dto.companyDocument.length !== 14)
+      companyDocumentISValid = false;
+
+    if (!companyDocumentISValid)
+      return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O documento da empresa inserido é inválido!');
 
     const user = await this.dataService.users.findOne({ where: { email: dto.email } });
 
-    if (user !== null) {
+    if (user !== null) 
+    {
       if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION) {
         const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '12h' });
         const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
@@ -143,9 +157,37 @@ export class AuthService {
         createdBy: 'customer-onboarding',
         updatedBy: 'customer-onboarding',
         actived: true
-      });
+    });
 
     await this.dataService.users.save(nUser);
+
+    const nCompany = new Company();
+    nCompany.document = dto.companyDocument;
+    nCompany.socialName = dto.companySocialName;
+    nCompany.fantasyName = dto.companyFantasyName;
+    nCompany.createdAt = new Date();
+    nCompany.updatedAt = new Date();
+    nCompany.createdBy = 'customer-onboarding';
+    nCompany.updatedBy = 'customer-onboarding';
+    nCompany.actived = true;
+
+    const nGroup = new Group();
+    nGroup.name = dto.groupName;
+    nGroup.createdAt = new Date();
+    nGroup.updatedAt = new Date();
+    nGroup.createdBy = 'customer-onboarding';
+    nGroup.updatedBy = 'customer-onboarding';
+    nGroup.actived = true;
+
+    await this.dataService.companies.save(nCompany);
+    await this.dataService.groups.save(nGroup);
+
+    const nCompanyUserGroup = new CompanyUserGroup();
+    nCompanyUserGroup.company = nCompany;
+    nCompanyUserGroup.user = nUser;
+    nCompanyUserGroup.group = nGroup;
+    
+    await this.dataService.companyUserGroups.save(nCompanyUserGroup);
     
     const token = this.jwtService.sign({ userId: nUser.id }, { expiresIn: '12h' });
     const resetLink = `http://seuapp.com/confirm-account?token=${token}`;

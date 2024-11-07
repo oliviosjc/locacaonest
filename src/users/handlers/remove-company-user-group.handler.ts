@@ -19,29 +19,11 @@ export class RemoveCompanyUserGroupCommandHandler implements ICommandHandler<Rem
         const { userId, groupId, companyId } = command;
         const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
         
-        if (!userLogged)
-            return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
-
         const owner = userLogged.owner || userLogged;
 
-        const group = await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
-        if (!group || group.owner.id !== owner.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para remover usuários deste grupo.');
+        await this.getEntityWithOwner(this.dataService.groups, groupId, 'O grupo informado não existe na base de dados!');
 
-        const company = await this.getEntityWithOwner(this.dataService.companies, companyId, 'A empresa informada não existe na base de dados!');
-        if (!company || company.owner.id !== owner.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para remover usuarios desta compania.');
-
-        let hasPermission = false;
-
-        if (userLogged.id === group.owner.id
-            && userLogged.id === company.owner.id)
-            hasPermission = true;
-        else
-            hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, 'RemoveCompanyUserGroupCommandHandler', this.dataService);
-
-        if(hasPermission === false)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para remover usuários deste grupo/compania.');
+        await this.getEntityWithOwner(this.dataService.companies, companyId, 'A empresa informada não existe na base de dados!');
 
         const companyUserGroup
          = await this.dataService.companyUserGroups.findOne({ where: { userId, groupId, companyId } });

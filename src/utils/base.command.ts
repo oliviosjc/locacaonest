@@ -6,10 +6,10 @@ export class BaseCommand
     @ApiProperty()
     @IsOptional()
     @IsString()
-    companyId : string;
+    companyId? : string;
 
     @ApiProperty()
     @IsOptional()
     @IsString()
-    groupId : string;
+    groupId? : string;
 }

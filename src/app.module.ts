@@ -14,6 +14,7 @@ import { EquipmentsModule } from './equipments/equipments.module';
 import { BackofficeModule } from './backoffice/backoffice.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PermissionInterceptor } from './interceptors/permission.interceptor';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { PermissionInterceptor } from './interceptors/permission.interceptor';
     AuthModule,
     EmailModule,
     EquipmentsModule,
-    BackofficeModule
+    BackofficeModule,
+    CqrsModule
   ],
   controllers: [],
   providers: [

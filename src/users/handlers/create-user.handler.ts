@@ -52,7 +52,7 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
       && userLogged.id === company.owner.id)
       hasPermission = true;
     else
-      hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, 'CreateUserCommandHandler', this.dataService);
+      hasPermission = await this.userService.hasUserPermission(userLogged.id, company.id, group.id, 'CreateUserCommandHandler', this.dataService);
 
     if (hasPermission === false)
       return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para criar usuários para este grupo/compania.');
