@@ -12,6 +12,8 @@ import { CreateCustomerDocumentConfigurationCommandHandler } from './handlers/do
 import { UsersModule } from 'src/users/users.module';
 import { UpdateBrandCommandHandler } from './handlers/brands/update-brand.handler';
 import { UpdateCategoryCommandHandler } from './handlers/categories/update-category.handler';
+import { UpdateCustomerContactCommandHandler } from './handlers/customers/contacts/update-customer-contact.handler';
+import { DeleteCustomerContactCommandHandler } from './handlers/customers/contacts/delete-customer-contact.handler';
 
 @Module({
   imports: [CqrsModule, AuthModule, UsersModule],
@@ -25,6 +27,8 @@ import { UpdateCategoryCommandHandler } from './handlers/categories/update-categ
     CreateCustomerCommandHandler,
     CreateCustomerAddressCommandHandler,
     CreateCustomerContactCommand,
+    UpdateCustomerContactCommandHandler,
+    DeleteCustomerContactCommandHandler,
     CreateCustomerDocumentConfigurationCommandHandler
   ]
 })

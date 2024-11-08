@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Put, Res } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { BaseController } from '../utils/base.controller';
 import { CreateBrandCommand } from './commands/brands/create-brand.command';
@@ -9,6 +9,9 @@ import { CreateCategoryCommand } from './commands/categories/create-category.com
 import { CreateModelCommand } from './commands/models/create-model.command';
 import { CreateCustomerCommand } from './commands/customers/create-customer.command';
 import { CreateCustomerAddressCommand } from './commands/customers/addresses/create-customer-address.command';
+import { UpdateCustomerContactCommand } from './commands/customers/contacts/update-customer-contact.command';
+import { CreateCustomerDocumentConfigurationCommand } from './commands/customers/documents/create-customer-document-configuration.command';
+import { DeleteCustomerContactCommand } from './commands/customers/contacts/delete-customer-contact.command';
 
 @Controller('backoffice')
 export class BackofficeController extends BaseController
@@ -66,9 +69,25 @@ export class BackofficeController extends BaseController
         return this.sendResponse(res, response);
     }
 
+    @Put('customer/update-contact')
+    @ApiOperation({ summary: 'Atualizar um contato de um cliente' }) 
+    async updateCustomerDocumentContact(@Body() body: UpdateCustomerContactCommand, @Res() res: Response): Promise<Response>
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
+    @Post('customer/delete-contact')
+    @ApiOperation({ summary: 'Excluir um contato de um cliente' }) 
+    async deleteCustomerDocumentContact(@Body() body: DeleteCustomerContactCommand, @Res() res: Response): Promise<Response>
+    {
+        const response: ResponseViewModel<string> = await this.commandBus.execute(body);
+        return this.sendResponse(res, response);
+    }
+
     @Post('customer/document/configuration')
     @ApiOperation({ summary: 'Criar uma nova configuração de documento' }) 
-    async createCustomerDocumentConfiguration(@Body() body: CreateCustomerAddressCommand, @Res() res: Response): Promise<Response>
+    async createCustomerDocumentConfiguration(@Body() body: CreateCustomerDocumentConfigurationCommand, @Res() res: Response): Promise<Response>
     {
         const response: ResponseViewModel<string> = await this.commandBus.execute(body);
         return this.sendResponse(res, response);
