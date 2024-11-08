@@ -35,10 +35,12 @@ export class PermissionInterceptor implements NestInterceptor
             if(group === null)
                 throw new ForbiddenException('Group does not exist');
 
-            if(group.owner.id === userLogged.id)
+            if(group.owner.id === userLogged.id
+            && group.root === true)
                 return next.handle();
 
-            const hasPermission = await this.userService.hasUserPermission(
+            const hasPermission 
+            = await this.userService.hasUserPermission(
                 userLogged.id, 
                 companyId, 
                 groupId, 

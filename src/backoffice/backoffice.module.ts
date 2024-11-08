@@ -9,15 +9,18 @@ import { CreateCustomerCommandHandler } from './handlers/customers/create-custom
 import { CreateCustomerAddressCommandHandler } from './handlers/customers/addresses/create-customer-address.handler';
 import { CreateCustomerContactCommand } from './commands/customers/contacts/create-customer-contact.command';
 import { CreateCustomerDocumentConfigurationCommandHandler } from './handlers/documents/create-customer-document-configuration.handler';
-import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
+import { UpdateBrandCommandHandler } from './handlers/brands/update-brand.handler';
+import { UpdateCategoryCommandHandler } from './handlers/categories/update-category.handler';
 
 @Module({
   imports: [CqrsModule, AuthModule, UsersModule],
   controllers: [BackofficeController],
   providers: [
     CreateBrandCommandHandler,
+    UpdateBrandCommandHandler,
     CreateCategoryCommandHandler,
+    UpdateCategoryCommandHandler,
     CreateModelCommandHandler,
     CreateCustomerCommandHandler,
     CreateCustomerAddressCommandHandler,
