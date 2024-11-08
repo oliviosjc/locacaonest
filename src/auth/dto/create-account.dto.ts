@@ -44,9 +44,4 @@ export class CreateAccountDTO
     @IsString()
     @Length(11, 14, { message: "O documento da empresa deve ter entre 1 e 14 caracteres" })
     companyDocument: string;
-
-    @ApiProperty()
-    @IsString()
-    @Length(1, 255, { message: "O nome do grupo deve ter entre 1 e 255 caracteres" })
-    groupName: string;
 }

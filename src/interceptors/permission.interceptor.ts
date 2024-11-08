@@ -29,6 +29,15 @@ export class PermissionInterceptor implements NestInterceptor
             if (!userLogged)
                 throw new UnauthorizedException('User is not authenticated');
 
+            const group 
+            = await this.dataService.groups.findOne({ where: { id: groupId }, relations: ['owner'] });
+
+            if(group === null)
+                throw new ForbiddenException('Group does not exist');
+
+            if(group.owner.id === userLogged.id)
+                return next.handle();
+
             const hasPermission = await this.userService.hasUserPermission(
                 userLogged.id, 
                 companyId, 

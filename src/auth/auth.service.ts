@@ -163,7 +163,7 @@ export class AuthService {
     nCompany.actived = true;
 
     const nGroup = new Group();
-    nGroup.name = dto.groupName;
+    nGroup.name = "Administrador do Sistema";
     nGroup.root = true;
     nGroup.owner = nUser;
     nGroup.createdAt = new Date();

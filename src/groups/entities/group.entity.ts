@@ -26,5 +26,5 @@ export class Group extends BaseEntity
     groupMenuItemFeatures: GroupMenuItemFeature[];
 
     @ManyToOne(() => User, user => user.groups)
-    owner?: User
+    owner: User
 }
