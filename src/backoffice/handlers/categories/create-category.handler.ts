@@ -21,7 +21,7 @@ export class CreateCategoryCommandHandler implements ICommandHandler<CreateCateg
         var nCategory = await this.dataService.categories.create({
             name,
             description,
-            owner: userLogged,
+            owner: userLogged.owner === null ? userLogged : userLogged.owner,
             actived: true,
             createdAt: new Date(),
             updatedAt: new Date(),

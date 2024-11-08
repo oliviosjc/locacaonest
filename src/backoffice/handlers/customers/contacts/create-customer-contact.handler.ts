@@ -5,9 +5,11 @@ import { ResponseViewModel } from "../../../../utils/response.model";
 import { IDataService } from "../../../../database/repositories/interfaces/data-service.interface";
 import { User } from "../../../../users/entities/user.entity";
 import { GetUserByCLSQuery } from "../../../../users/queries/get-user-by-cls.query";
-import { HttpStatus } from "@nestjs/common";
+import { HttpStatus, UseInterceptors } from "@nestjs/common";
+import { PermissionInterceptor } from "src/interceptors/permission.interceptor";
 
 @CommandHandler(CreateCustomerContactCommand)
+@UseInterceptors(PermissionInterceptor)
 export class CreateCustomerContactCommandHandler
     implements ICommandHandler<CreateCustomerContactCommand, ResponseViewModel<string>>
 {
@@ -17,20 +19,25 @@ export class CreateCustomerContactCommandHandler
     async execute(command: CreateCustomerContactCommand): Promise<ResponseViewModel<string>> 
     {
         const userLogged = (await this.queryBus.execute(new GetUserByCLSQuery())) as User;
-        if (!userLogged)
-            return new ResponseViewModel<string>(HttpStatus.UNAUTHORIZED, 'O Usuário não está autenticado!');
 
         const customer 
         = await this.dataService.customers.findOne({ where: { id: command.customerId }, relations: ['owner'] });
-        if(!customer || customer.owner.id !== userLogged.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para criar um contato.');
+
+        if(!customer)
+            return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 
+        'O cliente informado não existe na base de dados.');
+
+        const owner = userLogged.owner === null ? userLogged : userLogged.owner;
+
+        if(customer.owner.id !== owner.id)    
+            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Você não possui permissão para vincular contatos a este cliente.');
 
         const nContact
         = await this.dataService.customerContacts.create(
             {
                 customer: customer,
-                name: command.name,
-                position: command.position,
+                name: command.name.toUpperCase(),
+                position: command.position.toUpperCase(),
                 email: command.email,
                 whatsapp: command.whatsapp,
                 systemCommunication: command.systemCommunication

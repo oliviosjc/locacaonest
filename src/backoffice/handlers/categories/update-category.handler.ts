@@ -24,14 +24,12 @@ implements ICommandHandler<UpdateCategoryCommand, ResponseViewModel<string>>
         = await this.dataService.categories.findOne({ where: { id }, relations: ['owner'] });
 
         if(!category)
-            return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 
-        'A categoria informada não existe na base de dados.');
+            return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'A categoria informada não existe na base de dados.');
 
         const owner = userLogged.owner === null ? userLogged : userLogged.owner;
 
         if(category.owner.id !== owner.id)
-            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 
-        ' Vocé não possui permissão para alterar esta categoria.');
+            return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, 'Vocé não possui permissão para alterar esta categoria.');
 
         category.name = name;
         category.description = description;
