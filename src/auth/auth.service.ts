@@ -22,9 +22,11 @@ export class AuthService {
     private readonly emailService: EmailService
   ) { }
 
-  async signIn(email: string, password: string): Promise<ResponseViewModel<string>> {
+  async signIn(email: string, password: string): Promise<ResponseViewModel<string>> 
+  {
     const user
-      = await this.dataService.users.findOne({ where: { email: email }, relations: ["owner"] });
+      = await this.dataService.users.findOne({ where: { email: email }, 
+        relations: ["owner", "companyUserGroups.company", "companyUserGroups.group"] });
 
     if (user.status === UserStatus.BLOCKED)
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário vinculado a este e-mail está bloqueado!');
@@ -32,15 +34,26 @@ export class AuthService {
     if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION)
       return new ResponseViewModel<string>(HttpStatus.BAD_REQUEST, 'O usuário vinculado a este e-mail ainda não foi verificado!');
 
-    if (user && (await compare(password, user.password))) {
+    if (user && (await compare(password, user.password))) 
+    {
       const { password, ...result } = user;
-
       const payload =
       {
         email: result.email,
         sub: result.id,
         ownerId: result.owner ? result.owner.id : null,
-        status: result.status
+        status: result.status,
+        company: 
+        {
+          id: user.companyUserGroups[0].company.id,
+          name: user.companyUserGroups[0].company.socialName
+        },
+        group: 
+        {
+          id: user.companyUserGroups[0].group.id,
+          name: user.companyUserGroups[0].group.name
+        },
+        menu: null
       };
 
       return new ResponseViewModel<string>(HttpStatus.OK, "Login efetuado com sucesso!", this.jwtService.sign(payload));
@@ -61,9 +74,9 @@ export class AuthService {
 
     if (user.status === UserStatus.WAITING_EMAIL_VERIFICATION) {
       const token = this.jwtService.sign({ userId: user.id }, { expiresIn: '12h' });
-      const resetLink = `http://seuapp.com/confirm-account?token=${token}`;
+      const resetLink = `http://seuapp.com/confirm-account?token=${token}`; 
 
-      await this.emailService.addEmailToQueue({
+      this.emailService.addEmailToQueue({
         to: user.email,
         subject: 'Confirmar minha conta',
         text: `Clique no link abaixo para confirmar sua nova conta: ${resetLink}`
@@ -103,7 +116,8 @@ export class AuthService {
     }
   }
 
-  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> {
+  async createAccount(dto: CreateAccountDTO): Promise<ResponseViewModel<string>> 
+  {
     const isDocumentValid = (document: string) =>
       (document.length === 11 && DocumentHelper.validateCPF(document)) ||
       (document.length === 14);
@@ -163,7 +177,7 @@ export class AuthService {
     nCompany.actived = true;
 
     const nGroup = new Group();
-    nGroup.name = "Administrador do Sistema";
+    nGroup.name = "Administrador";
     nGroup.root = true;
     nGroup.owner = nUser;
     nGroup.createdAt = new Date();
@@ -208,6 +222,7 @@ export class AuthService {
     user.updatedAt = new Date();
     user.updatedBy = 'customer-onboarding';
     user.subscriptionStartDate = new Date();
+    user.subscriptionEndDate = new Date();
     user.subscriptionEndDate.setDate(user.subscriptionStartDate.getDate() + 14);
 
     await this.dataService.users.save(user);

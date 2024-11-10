@@ -29,7 +29,7 @@ export class DeleteCustomerContactCommandHandler implements ICommandHandler<Dele
 
         if(customerContact.customer.owner.id !== owner.id)    
             return new ResponseViewModel<string>(HttpStatus.FORBIDDEN, ' Vocé não possui permissão para remover este contato.');
-
+        
         await this.dataService.customerContacts.remove(customerContact);
         return new ResponseViewModel<string>(HttpStatus.OK, 'O contato foi excluído com sucesso!');
     }
